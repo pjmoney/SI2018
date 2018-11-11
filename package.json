@@ -1,0 +1,21 @@
+{
+  "name": "si2018",
+  "version": "1.0.0",
+  "description": "Projekt na Sztuczną Inteligencję",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/outfizzy/SI2018.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/outfizzy/SI2018/issues"
+  },
+  "homepage": "https://github.com/outfizzy/SI2018#readme"
+}
