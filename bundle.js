@@ -85,9 +85,7 @@ function spawnPackage(count) {
         var x = Math.floor(Math.random() * 16);
         var y = Math.floor(Math.random() * 14);
 
-        map[x][y] = sprite;
-
-        ctx.drawImage(spritesheet, sprite * config.getWidth(), 0, config.getWidth(), config.getHeight(), x * config.getWidth(), y * config.getHeight(), config.getWidth(), config.getHeight());
+        redraw(sprite, x, y);
     }
 }
 
@@ -97,6 +95,10 @@ function spawnForklift() {
     var x = 15;
     var y = 15;
 
+    redraw(sprite, x, y);
+}
+
+function redraw(sprite, x, y) {
     map[x][y] = sprite;
 
     ctx.drawImage(spritesheet, sprite * config.getWidth(), 0, config.getWidth(), config.getHeight(), x * config.getWidth(), y * config.getHeight(), config.getWidth(), config.getHeight());
