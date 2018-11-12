@@ -39,8 +39,6 @@ function loaded()
 }
 
 function drawMap(){
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
     let sprite = 1;
     
 	for (var x=0; x < config.getTileWidth(); x++)
@@ -64,13 +62,7 @@ function drawMap(){
                     sprite = 7;
                     break;
             }
-            
-			ctx.drawImage(spritesheet,
-			sprite*config.getWidth(), 0,
-			config.getWidth(), config.getHeight(),
-			x*config.getWidth(), y*config.getHeight(),
-			config.getWidth(), config.getHeight());
-
+			redraw(sprite,x,y);
 		}
     }
 }
@@ -82,6 +74,8 @@ function spawnPackage(count){
         let x = Math.floor(Math.random() * 16);
         let y = Math.floor(Math.random() * 14);
 
+        map[x][y] = sprite;
+
         redraw(sprite,x,y);
     }
 }
@@ -92,12 +86,12 @@ function spawnForklift(){
     let x = 15;
     let y = 15;
 
+    map[x][y] = sprite;
+
     redraw(sprite,x,y);
 }
 
 function redraw(sprite,x,y){
-    map[x][y] = sprite;
-
     ctx.drawImage(spritesheet,
     sprite*config.getWidth(), 0,
     config.getWidth(), config.getHeight(),
