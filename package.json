@@ -19,7 +19,7 @@
   "scripts": {
     "start": "node bin/dev",
     "clean": "rmdir dist /s /q",
-    "build": "npm run clean && mkdir dist && babel src -s -d dist",
+    "build": "npm run clean && mkdir dist && babel src -s -d dist && browserify .\\dist\\js\\index.js -o bundle.js",
     "production": "npm run build && node bin/production"
   },
   "repository": {

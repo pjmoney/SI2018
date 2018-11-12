@@ -1,6 +1,6 @@
-class Package{
+export default class Package{
 
-    constructor(weight, color){
-
+    constructor(weight){
+        this.weight = weight;
     }
 }
