@@ -88,16 +88,16 @@ var mapService = function () {
                             sprite = this.map.parts.floor;
                             break;
                     }
-                    this.redraw(x, y, sprite);
+                    this.drawSprite(x, y, sprite);
                 }
             }
         }
 
-        //redraw point
+        //draw sprite
 
     }, {
-        key: 'redraw',
-        value: function redraw(x, y, sprite) {
+        key: 'drawSprite',
+        value: function drawSprite(x, y, sprite) {
             this.ctx.drawImage(this.sprites, sprite * this.map.tileWidth, 0, this.map.tileWidth, this.map.tileHeight, x * this.map.tileWidth, y * this.map.tileHeight, this.map.tileWidth, this.map.tileHeight);
         }
 
@@ -105,15 +105,25 @@ var mapService = function () {
 
     }, {
         key: 'drawPackage',
-        value: function drawPackage(packages, store) {
+        value: function drawPackage(packages) {
             console.log(packages);
 
+            var store = document.getElementById('store');
+            var storeul = document.getElementById('storeul');
+            var ul = document.createElement('ul');
+
+            storeul.remove();
+            ul.id = 'storeul';
+            store.appendChild(ul);
+
             for (var x = 0; x < packages.length; x++) {
+                if (!this.map.grid[packages[x].position.x][packages[x].position.y] == this.map.parts.package) this.setGrid(packages[x].position.x, packages[x].position.y, this.map.parts.floor);
+
                 this.setGrid(packages[x].position.x, packages[x].position.y, this.map.parts.package);
-                this.redraw(packages[x].position.x, packages[x].position.y, this.map.parts.package);
+                this.drawSprite(packages[x].position.x, packages[x].position.y, this.map.parts.package);
 
                 var li = document.createElement('li');
-                store.appendChild(li);
+                ul.appendChild(li);
 
                 li.innerHTML += 'Package (' + packages[x].width + 'x' + packages[x].length + 'x' + packages[x].height + ', ' + packages[x].weight + ' kg' + ' x: ' + packages[x].position.x + ' y: ' + packages[x].position.y + ')';
             }

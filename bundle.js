@@ -9,6 +9,8 @@ var _packageService = require('./services/packageService.js');
 
 var _packageService2 = _interopRequireDefault(_packageService);
 
+var _fs = require('fs');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var canvas = null;
@@ -30,9 +32,6 @@ var packageService = new _packageService2.default();
 var nop = 5;
 var packages = packageService.randomPackage(nop, mapService.map);
 
-var store = document.getElementById('store');
-var stored = document.getElementById('stored');
-
 canvas = document.getElementById('grid');
 
 canvas.width = mapService.getWidth();
@@ -52,10 +51,10 @@ mapService.init();
 
 function loaded() {
     mapService.drawMap();
-    mapService.drawPackage(packages, store);
+    mapService.drawPackage(packages);
 }
 
-},{"./services/mapService.js":4,"./services/packageService.js":5}],2:[function(require,module,exports){
+},{"./services/mapService.js":4,"./services/packageService.js":5,"fs":6}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -199,16 +198,16 @@ var mapService = function () {
                             sprite = this.map.parts.floor;
                             break;
                     }
-                    this.redraw(x, y, sprite);
+                    this.drawSprite(x, y, sprite);
                 }
             }
         }
 
-        //redraw point
+        //draw sprite
 
     }, {
-        key: 'redraw',
-        value: function redraw(x, y, sprite) {
+        key: 'drawSprite',
+        value: function drawSprite(x, y, sprite) {
             this.ctx.drawImage(this.sprites, sprite * this.map.tileWidth, 0, this.map.tileWidth, this.map.tileHeight, x * this.map.tileWidth, y * this.map.tileHeight, this.map.tileWidth, this.map.tileHeight);
         }
 
@@ -216,15 +215,25 @@ var mapService = function () {
 
     }, {
         key: 'drawPackage',
-        value: function drawPackage(packages, store) {
+        value: function drawPackage(packages) {
             console.log(packages);
 
+            var store = document.getElementById('store');
+            var storeul = document.getElementById('storeul');
+            var ul = document.createElement('ul');
+
+            storeul.remove();
+            ul.id = 'storeul';
+            store.appendChild(ul);
+
             for (var x = 0; x < packages.length; x++) {
+                if (!this.map.grid[packages[x].position.x][packages[x].position.y] == this.map.parts.package) this.setGrid(packages[x].position.x, packages[x].position.y, this.map.parts.floor);
+
                 this.setGrid(packages[x].position.x, packages[x].position.y, this.map.parts.package);
-                this.redraw(packages[x].position.x, packages[x].position.y, this.map.parts.package);
+                this.drawSprite(packages[x].position.x, packages[x].position.y, this.map.parts.package);
 
                 var li = document.createElement('li');
-                store.appendChild(li);
+                ul.appendChild(li);
 
                 li.innerHTML += 'Package (' + packages[x].width + 'x' + packages[x].length + 'x' + packages[x].height + ', ' + packages[x].weight + ' kg' + ' x: ' + packages[x].position.x + ' y: ' + packages[x].position.y + ')';
             }
@@ -265,7 +274,7 @@ var PackageService = function () {
 
             while (count > 0) {
                 var x = Math.floor(Math.random() * map.width);
-                var y = Math.floor(Math.random() * (map.height - 1) * 0.75);
+                var y = Math.floor(Math.random() * (map.height * 11 / 16));
 
                 var position = {
                     x: x,
@@ -283,6 +292,39 @@ var PackageService = function () {
 
             return packages;
         }
+    }, {
+        key: 'randomPackageOnce',
+        value: function randomPackageOnce(packages, map) {
+            var x = Math.floor(Math.random() * map.width);
+            var y = Math.floor(Math.random() * (map.height - 1) * 0.75);
+
+            var position = {
+                x: x,
+                y: y
+            };
+
+            var weight = Math.floor(Math.random() * 30) + 1;
+            var length = Math.floor(Math.random() * 20) + 1;
+            var width = Math.floor(Math.random() * 20) + 1;
+            var height = Math.floor(Math.random() * 20) + 1;
+
+            packages.push(new _package2.default(weight, width, height, length, position));
+
+            return packages;
+        }
+    }, {
+        key: 'givePackage',
+        value: function givePackage(packages, target) {
+            var i = 0;
+
+            packages.forEach(function (pck) {
+                i++;
+                if (pck.position.x == target.x && pck.position.y == target.y) {
+                    packages.splice(i, 1);
+                    return packages;
+                }
+            });
+        }
     }]);
 
     return PackageService;
@@ -290,4 +332,6 @@ var PackageService = function () {
 
 exports.default = PackageService;
 
-},{"../models/package.js":3}]},{},[1]);
+},{"../models/package.js":3}],6:[function(require,module,exports){
+
+},{}]},{},[1]);

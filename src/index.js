@@ -1,5 +1,6 @@
 import MapService from './services/mapService.js';
 import PackageService from './services/packageService.js';
+import { watchFile } from 'fs';
 
 let canvas = null;
 let ctx = null;
@@ -20,9 +21,6 @@ let packageService = new PackageService();
 let nop = 5;
 let packages = packageService.randomPackage(nop,mapService.map);
 
-let store = document.getElementById('store');
-let stored = document.getElementById('stored');
-
 canvas = document.getElementById('grid');
 
 canvas.width = mapService.getWidth();
@@ -42,5 +40,5 @@ mapService.init();
 
 function loaded(){
     mapService.drawMap();
-    mapService.drawPackage(packages,store);
+    mapService.drawPackage(packages);
 }

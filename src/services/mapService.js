@@ -30,16 +30,16 @@ export default class mapService{
             for(var y=0;y < this.map.height; y++){
                 if(y > max){
                     if(x < min)
-                        this.setGrid(x,y,this.map.parts.agd)
+                        this.setGrid(x,y,this.map.parts.agd);
                     else if(x < min*2)
-                        this.setGrid(x,y,this.map.parts.building)
+                        this.setGrid(x,y,this.map.parts.building);
                     else if(x > max)
-                        this.setGrid(x,y,this.map.parts.garden)
+                        this.setGrid(x,y,this.map.parts.garden);
                     else
-                        this.setGrid(x,y,this.map.parts.food)
+                        this.setGrid(x,y,this.map.parts.food);
                 }
                 else
-                    this.setGrid(x,y,this.map.parts.floor)
+                    this.setGrid(x,y,this.map.parts.floor);
             }
         }
         console.log(this.map.grid)    
@@ -69,13 +69,13 @@ export default class mapService{
                         sprite = this.map.parts.floor;
                         break;
                 }
-                this.redraw(x,y,sprite);
+                this.drawSprite(x,y,sprite);
             }
         }
     }
 
-    //redraw point
-    redraw(x,y,sprite){
+    //draw sprite
+    drawSprite(x,y,sprite){
         this.ctx.drawImage(
             this.sprites,
             sprite*this.map.tileWidth, 0,
@@ -86,15 +86,26 @@ export default class mapService{
     }
 
     //draw package
-    drawPackage(packages, store){
+    drawPackage(packages){
         console.log(packages);
 
-        for(var x = 0; x < packages.length; x++){
-            this.setGrid(packages[x].position.x, packages[x].position.y, this.map.parts.package);
-            this.redraw(packages[x].position.x, packages[x].position.y, this.map.parts.package);
+        let store = document.getElementById('store');
+        let storeul = document.getElementById('storeul')
+        let ul = document.createElement('ul');
 
-            var li = document.createElement('li');
-            store.appendChild(li);
+        storeul.remove();
+        ul.id = 'storeul'
+        store.appendChild(ul);
+
+        for(var x = 0; x < packages.length; x++){
+            if(!this.map.grid[packages[x].position.x][packages[x].position.y] == this.map.parts.package)
+                this.setGrid(packages[x].position.x, packages[x].position.y, this.map.parts.floor);
+
+            this.setGrid(packages[x].position.x, packages[x].position.y, this.map.parts.package);
+            this.drawSprite(packages[x].position.x, packages[x].position.y, this.map.parts.package);
+
+            let li = document.createElement('li');
+            ul.appendChild(li);
 
             li.innerHTML += 'Package (' + 
             packages[x].width + 'x' + 

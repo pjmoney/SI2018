@@ -26,7 +26,7 @@ var PackageService = function () {
 
             while (count > 0) {
                 var x = Math.floor(Math.random() * map.width);
-                var y = Math.floor(Math.random() * (map.height - 1) * 0.75);
+                var y = Math.floor(Math.random() * (map.height * 11 / 16));
 
                 var position = {
                     x: x,
@@ -43,6 +43,39 @@ var PackageService = function () {
             }
 
             return packages;
+        }
+    }, {
+        key: 'randomPackageOnce',
+        value: function randomPackageOnce(packages, map) {
+            var x = Math.floor(Math.random() * map.width);
+            var y = Math.floor(Math.random() * (map.height - 1) * 0.75);
+
+            var position = {
+                x: x,
+                y: y
+            };
+
+            var weight = Math.floor(Math.random() * 30) + 1;
+            var length = Math.floor(Math.random() * 20) + 1;
+            var width = Math.floor(Math.random() * 20) + 1;
+            var height = Math.floor(Math.random() * 20) + 1;
+
+            packages.push(new _package2.default(weight, width, height, length, position));
+
+            return packages;
+        }
+    }, {
+        key: 'givePackage',
+        value: function givePackage(packages, target) {
+            var i = 0;
+
+            packages.forEach(function (pck) {
+                i++;
+                if (pck.position.x == target.x && pck.position.y == target.y) {
+                    packages.splice(i, 1);
+                    return packages;
+                }
+            });
         }
     }]);
 

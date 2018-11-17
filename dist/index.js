@@ -8,6 +8,8 @@ var _packageService = require('./services/packageService.js');
 
 var _packageService2 = _interopRequireDefault(_packageService);
 
+var _fs = require('fs');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var canvas = null;
@@ -29,9 +31,6 @@ var packageService = new _packageService2.default();
 var nop = 5;
 var packages = packageService.randomPackage(nop, mapService.map);
 
-var store = document.getElementById('store');
-var stored = document.getElementById('stored');
-
 canvas = document.getElementById('grid');
 
 canvas.width = mapService.getWidth();
@@ -51,6 +50,6 @@ mapService.init();
 
 function loaded() {
     mapService.drawMap();
-    mapService.drawPackage(packages, store);
+    mapService.drawPackage(packages);
 }
 //# sourceMappingURL=index.js.map
