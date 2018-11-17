@@ -1,2 +1,7 @@
-# SI2018
-Projekt na Sztuczną Inteligencję
+Forklift AI v0.1.0
+
+Developer build: 
+
+```
+node run dev
+``` 

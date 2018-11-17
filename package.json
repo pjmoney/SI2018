@@ -1,9 +1,10 @@
 {
   "name": "si2018",
-  "version": "1.0.0",
-  "description": "Projekt na Sztuczną Inteligencję",
+  "version": "0.1.0",
+  "description": "Forklift AI",
   "main": "index.js",
   "dependencies": {
+    "browserify": "^16.2.3",
     "connect": "^3.6.6",
     "requirejs": "^2.3.6",
     "serve-static": "^1.13.2"
@@ -19,7 +20,7 @@
   "scripts": {
     "start": "node bin/dev",
     "clean": "rmdir dist /s /q",
-    "build": "npm run clean && mkdir dist && babel src -s -d dist && browserify .\\dist\\js\\index.js -o bundle.js",
+    "dev": "npm run clean && mkdir dist && babel src -s -d dist && browserify .\\dist\\index.js -o bundle.js",
     "production": "npm run build && node bin/production"
   },
   "repository": {

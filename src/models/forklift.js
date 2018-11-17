@@ -1,4 +1,3 @@
-
 class Forklift{
 
     constructor(speed){
