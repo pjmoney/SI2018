@@ -1,7 +1,14 @@
 Forklift AI v0.1.0
 
+Install:
+
+```
+npm install
+```
+
+
 Developer build: 
 
 ```
-node run dev
+npm run dev
 ``` 
