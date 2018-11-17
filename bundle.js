@@ -1,161 +1,61 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
-var _forklift = require('./models/forklift.js');
-
-var _forklift2 = _interopRequireDefault(_forklift);
-
 var _mapService = require('./services/mapService.js');
 
 var _mapService2 = _interopRequireDefault(_mapService);
 
-var _package = require('./models/package.js');
+var _packageService = require('./services/packageService.js');
 
-var _package2 = _interopRequireDefault(_package);
+var _packageService2 = _interopRequireDefault(_packageService);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var fl = new _forklift2.default(5); //SI2018
-
-var packages = [];
-
 var canvas = null;
 var ctx = null;
-var spritesheet = null;
+var sprites = null;
 
-var spritesheetLoaded = false;
+//map dimensions
+var map = {
+    width: 16,
+    height: 16,
+    tileWidth: 32,
+    tileHeight: 32
+};
+
+var mapService = new _mapService2.default(map.width, map.height, map.tileWidth, map.tileHeight);
+var packageService = new _packageService2.default();
+
+//number of packages
+var nop = 5;
+var packages = packageService.randomPackage(nop, mapService.map);
+
+var store = document.getElementById('store');
+var stored = document.getElementById('stored');
 
 canvas = document.getElementById('grid');
 
-var map = new _mapService2.default(16, 16, 32, 32, canvas);
-map.init();
+canvas.width = mapService.getWidth();
+canvas.height = mapService.getHeight();
 
-// function init(){
+ctx = canvas.getContext("2d");
 
+sprites = new Image();
+sprites.src = './img/sprites.png';
 
-//     canvas = document.getElementById('grid');
+mapService.ctx = ctx;
+mapService.sprites = sprites;
 
-//     canvas.width = config.getFullWidth();
-//     canvas.height = config.getFullHeight();
+sprites.onload = loaded;
 
-//     ctx = canvas.getContext("2d");
+mapService.init();
 
-//     spritesheet = new Image();
-//     spritesheet.src = './img/sprites.png';
-//     spritesheet.onload = loaded;
-// }
+function loaded() {
+    mapService.drawMap();
+    mapService.drawPackage(packages, store);
+}
 
-// function loaded()
-// {
-//     spritesheetLoaded = true;
-//     drawMap();
-//     spawnPackage(5);
-//     spawnForklift();
-
-// }
-
-// function drawMap(){
-//     let sprite = 1;
-
-// 	for (var x=0; x < map.getTileWidth(); x++)
-// 	{
-// 		for (var y=0; y < config.getTileHeight(); y++)
-// 		{
-//             switch(map[x][y]){
-//                 case 1:
-//                     sprite = 1;
-//                     break;
-//                 case 3:
-//                     sprite = 3;
-//                     break;
-//                 case 4:
-//                     sprite = 4;
-//                     break;
-//                 case 5:
-//                     sprite = 5;
-//                     break;
-//                 case 7:
-//                     sprite = 7;
-//                     break;
-//             }
-// 			redraw(sprite,x,y);
-// 		}
-//     }
-// }
-
-// function spawnPackage(count){
-//     let sprite = 2;
-
-//     for(var count; count > 0; count--){
-//         let x = Math.floor(Math.random() * 16);
-//         let y = Math.floor(Math.random() * 14);
-
-//         map[x][y] = sprite;
-
-//         redraw(sprite,x,y);
-//     }
-// }
-
-// function spawnForklift(){
-//     let sprite = 0;
-
-//     let x = 15;
-//     let y = 15;
-
-//     map[x][y] = sprite;
-
-//     redraw(sprite,x,y);
-// }
-
-// function redraw(sprite,x,y){
-//     ctx.drawImage(spritesheet,
-//     sprite*config.getWidth(), 0,
-//     config.getWidth(), config.getHeight(),
-//     x*config.getWidth(), y*config.getHeight(),
-//     config.getWidth(), config.getHeight());
-// }
-
-// init();
-
-// console.log(map);
-
-},{"./models/forklift.js":2,"./models/package.js":4,"./services/mapService.js":5}],2:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Forklift = function () {
-    function Forklift(speed) {
-        _classCallCheck(this, Forklift);
-
-        this.speed = speed;
-        this.isCarrying = false;
-    }
-
-    _createClass(Forklift, [{
-        key: "getSpeed",
-        value: function getSpeed() {
-            return this.speed;
-        }
-    }, {
-        key: "isFree",
-        value: function isFree() {
-            return this.isCarrying;
-        }
-    }]);
-
-    return Forklift;
-}();
-
-exports.default = Forklift;
-
-},{}],3:[function(require,module,exports){
+},{"./services/mapService.js":4,"./services/packageService.js":5}],2:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -187,7 +87,7 @@ var Map = function Map(width, height, tileWidth, tileHeight) {
 
 exports.default = Map;
 
-},{}],4:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -196,15 +96,19 @@ Object.defineProperty(exports, "__esModule", {
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Package = function Package(weight) {
+var Package = function Package(weight, width, height, length, position) {
     _classCallCheck(this, Package);
 
     this.weight = weight;
+    this.width = width;
+    this.height = height;
+    this.length = length;
+    this.position = position;
 };
 
 exports.default = Package;
 
-},{}],5:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -222,11 +126,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var mapService = function () {
-    function mapService(width, height, tileWidth, tileHeight, canvas) {
+    function mapService(width, height, tileWidth, tileHeight) {
         _classCallCheck(this, mapService);
 
         this.map = new _map2.default(width, height, tileWidth, tileHeight);
-        this.canvas = canvas;
         this.ctx = null;
         this.sprites = null;
     }
@@ -250,50 +153,28 @@ var mapService = function () {
             this.map.grid[x][y] = value;
         }
 
-        //setmap
-
-    }, {
-        key: 'initGrid',
-        value: function initGrid() {
-            for (var x = 0; x < this.map.width; x++) {
-                this.map.grid[x] = [];
-                for (var y = 0; y < this.map.height; y++) {
-                    if (y == this.map.width - 2) this.setGrid(x, y, this.map.parts.garden);else if (y == this.map.width - 1) {
-                        if (x < 5) {
-                            this.setGrid(x, y, this.map.parts.food);
-                        } else if (x < 10) {
-                            this.setGrid(x, y, this.map.parts.building);
-                        } else {
-                            this.setGrid(x, y, this.map.parts.agd);
-                        }
-                    } else {
-                        this.setGrid(x, y, this.map.parts.floor);
-                    }
-                }
-            }
-            return this.map.grid;
-        }
-
-        //init drawing
+        //init map
 
     }, {
         key: 'init',
         value: function init() {
-            console.log(this.initGrid());
+            var min = Math.round(this.map.width * 0.25);
+            var max = Math.round(this.map.height * 0.75) - 1;
 
-            this.canvas.width = this.getWidth();
-            this.canvas.height = this.getHeight();
-
-            this.ctx = this.canvas.getContext("2d");
-
-            this.sprites = new Image();
-            this.sprites.src = './img/sprites.png';
-            var funkcja = this.drawMap();
-            this.sprites.onload = function () {
-                funkcja();
-            };
-            this.drawMap();
+            for (var x = 0; x < this.map.width; x++) {
+                this.map.grid[x] = [];
+                for (var y = 0; y < this.map.height; y++) {
+                    if (y > max) {
+                        if (x < min) this.setGrid(x, y, this.map.parts.agd);else if (x < min * 2) this.setGrid(x, y, this.map.parts.building);else if (x > max) this.setGrid(x, y, this.map.parts.garden);else this.setGrid(x, y, this.map.parts.food);
+                    } else this.setGrid(x, y, this.map.parts.floor);
+                }
+            }
+            console.log(this.map.grid);
+            return this.map.grid;
         }
+
+        //draw base map
+
     }, {
         key: 'drawMap',
         value: function drawMap() {
@@ -318,16 +199,35 @@ var mapService = function () {
                             sprite = this.map.parts.floor;
                             break;
                     }
-
                     this.redraw(x, y, sprite);
                 }
             }
         }
+
+        //redraw point
+
     }, {
         key: 'redraw',
         value: function redraw(x, y, sprite) {
-            sprite;
             this.ctx.drawImage(this.sprites, sprite * this.map.tileWidth, 0, this.map.tileWidth, this.map.tileHeight, x * this.map.tileWidth, y * this.map.tileHeight, this.map.tileWidth, this.map.tileHeight);
+        }
+
+        //draw package
+
+    }, {
+        key: 'drawPackage',
+        value: function drawPackage(packages, store) {
+            console.log(packages);
+
+            for (var x = 0; x < packages.length; x++) {
+                this.setGrid(packages[x].position.x, packages[x].position.y, this.map.parts.package);
+                this.redraw(packages[x].position.x, packages[x].position.y, this.map.parts.package);
+
+                var li = document.createElement('li');
+                store.appendChild(li);
+
+                li.innerHTML += 'Package (' + packages[x].width + 'x' + packages[x].length + 'x' + packages[x].height + ', ' + packages[x].weight + ' kg' + ' x: ' + packages[x].position.x + ' y: ' + packages[x].position.y + ')';
+            }
         }
     }]);
 
@@ -336,4 +236,58 @@ var mapService = function () {
 
 exports.default = mapService;
 
-},{"../models/map.js":3}]},{},[1]);
+},{"../models/map.js":2}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _package = require('../models/package.js');
+
+var _package2 = _interopRequireDefault(_package);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var PackageService = function () {
+    function PackageService() {
+        _classCallCheck(this, PackageService);
+    }
+
+    _createClass(PackageService, [{
+        key: 'randomPackage',
+        value: function randomPackage(count, map) {
+            var packages = [];
+
+            while (count > 0) {
+                var x = Math.floor(Math.random() * map.width);
+                var y = Math.floor(Math.random() * (map.height - 1) * 0.75);
+
+                var position = {
+                    x: x,
+                    y: y
+                };
+
+                var weight = Math.floor(Math.random() * 30) + 1;
+                var length = Math.floor(Math.random() * 20) + 1;
+                var width = Math.floor(Math.random() * 20) + 1;
+                var height = Math.floor(Math.random() * 20) + 1;
+
+                packages.push(new _package2.default(weight, width, height, length, position));
+                count--;
+            }
+
+            return packages;
+        }
+    }]);
+
+    return PackageService;
+}();
+
+exports.default = PackageService;
+
+},{"../models/package.js":3}]},{},[1]);
