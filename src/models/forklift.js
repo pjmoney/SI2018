@@ -1,18 +1,9 @@
 class Forklift{
 
-    constructor(speed){
-        this.speed = speed;
-        this.isCarrying = false;
+    constructor(carry, position){
+        this.carry = carry,
+        this.position = position
     }
-
-    getSpeed() {
-        return this.speed;
-    }
-
-    isFree() {
-        return this.isCarrying;
-    }
-
 }
 
 export default Forklift;

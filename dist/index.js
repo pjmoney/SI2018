@@ -8,7 +8,9 @@ var _packageService = require('./services/packageService.js');
 
 var _packageService2 = _interopRequireDefault(_packageService);
 
-var _fs = require('fs');
+var _forkliftService = require('./services/forkliftService.js');
+
+var _forkliftService2 = _interopRequireDefault(_forkliftService);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -26,6 +28,7 @@ var map = {
 
 var mapService = new _mapService2.default(map.width, map.height, map.tileWidth, map.tileHeight);
 var packageService = new _packageService2.default();
+var forkliftService = new _forkliftService2.default();
 
 //number of packages
 var nop = 5;
@@ -51,5 +54,6 @@ mapService.init();
 function loaded() {
     mapService.drawMap();
     mapService.drawPackage(packages);
+    mapService.drawForklift(forkliftService.fork);
 }
 //# sourceMappingURL=index.js.map

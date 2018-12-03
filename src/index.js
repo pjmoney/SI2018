@@ -1,6 +1,6 @@
 import MapService from './services/mapService.js';
 import PackageService from './services/packageService.js';
-import { watchFile } from 'fs';
+import ForkliftService from './services/forkliftService.js';
 
 let canvas = null;
 let ctx = null;
@@ -16,6 +16,7 @@ let map = {
 
 let mapService = new MapService(map.width,map.height,map.tileWidth,map.tileHeight);
 let packageService = new PackageService();
+let forkliftService = new ForkliftService();
 
 //number of packages
 let nop = 5;
@@ -41,4 +42,5 @@ mapService.init();
 function loaded(){
     mapService.drawMap();
     mapService.drawPackage(packages);
+    mapService.drawForklift(forkliftService.fork);
 }

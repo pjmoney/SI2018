@@ -9,7 +9,9 @@ var _packageService = require('./services/packageService.js');
 
 var _packageService2 = _interopRequireDefault(_packageService);
 
-var _fs = require('fs');
+var _forkliftService = require('./services/forkliftService.js');
+
+var _forkliftService2 = _interopRequireDefault(_forkliftService);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -27,6 +29,7 @@ var map = {
 
 var mapService = new _mapService2.default(map.width, map.height, map.tileWidth, map.tileHeight);
 var packageService = new _packageService2.default();
+var forkliftService = new _forkliftService2.default();
 
 //number of packages
 var nop = 5;
@@ -52,9 +55,27 @@ mapService.init();
 function loaded() {
     mapService.drawMap();
     mapService.drawPackage(packages);
+    mapService.drawForklift(forkliftService.fork);
 }
 
-},{"./services/mapService.js":4,"./services/packageService.js":5,"fs":6}],2:[function(require,module,exports){
+},{"./services/forkliftService.js":5,"./services/mapService.js":6,"./services/packageService.js":7}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Forklift = function Forklift(carry, position) {
+    _classCallCheck(this, Forklift);
+
+    this.carry = carry, this.position = position;
+};
+
+exports.default = Forklift;
+
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -86,7 +107,7 @@ var Map = function Map(width, height, tileWidth, tileHeight) {
 
 exports.default = Map;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -107,7 +128,35 @@ var Package = function Package(weight, width, height, length, position) {
 
 exports.default = Package;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _forklift = require('../models/forklift.js');
+
+var _forklift2 = _interopRequireDefault(_forklift);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var position = {
+  x: 15,
+  y: 11
+};
+
+var ForkliftService = function ForkliftService() {
+  _classCallCheck(this, ForkliftService);
+
+  this.fork = new _forklift2.default(null, position);
+};
+
+exports.default = ForkliftService;
+
+},{"../models/forklift.js":2}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -216,7 +265,6 @@ var mapService = function () {
     }, {
         key: 'drawPackage',
         value: function drawPackage(packages) {
-            console.log(packages);
 
             var store = document.getElementById('store');
             var storeul = document.getElementById('storeul');
@@ -238,6 +286,17 @@ var mapService = function () {
                 li.innerHTML += 'Package (' + packages[x].width + 'x' + packages[x].length + 'x' + packages[x].height + ', ' + packages[x].weight + ' kg' + ' x: ' + packages[x].position.x + ' y: ' + packages[x].position.y + ')';
             }
         }
+
+        //draw forklift
+
+    }, {
+        key: 'drawForklift',
+        value: function drawForklift(fork) {
+            console.log("elo");
+            this.setGrid(fork.position.x, fork.position.y, this.map.parts.forklift);
+            this.drawSprite(fork.position.x, fork.position.y, this.map.parts.forklift);
+            console.log(this.map.grid);
+        }
     }]);
 
     return mapService;
@@ -245,7 +304,7 @@ var mapService = function () {
 
 exports.default = mapService;
 
-},{"../models/map.js":2}],5:[function(require,module,exports){
+},{"../models/map.js":3}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -332,6 +391,4 @@ var PackageService = function () {
 
 exports.default = PackageService;
 
-},{"../models/package.js":3}],6:[function(require,module,exports){
-
-},{}]},{},[1]);
+},{"../models/package.js":4}]},{},[1]);

@@ -106,7 +106,6 @@ var mapService = function () {
     }, {
         key: 'drawPackage',
         value: function drawPackage(packages) {
-            console.log(packages);
 
             var store = document.getElementById('store');
             var storeul = document.getElementById('storeul');
@@ -127,6 +126,17 @@ var mapService = function () {
 
                 li.innerHTML += 'Package (' + packages[x].width + 'x' + packages[x].length + 'x' + packages[x].height + ', ' + packages[x].weight + ' kg' + ' x: ' + packages[x].position.x + ' y: ' + packages[x].position.y + ')';
             }
+        }
+
+        //draw forklift
+
+    }, {
+        key: 'drawForklift',
+        value: function drawForklift(fork) {
+            console.log("elo");
+            this.setGrid(fork.position.x, fork.position.y, this.map.parts.forklift);
+            this.drawSprite(fork.position.x, fork.position.y, this.map.parts.forklift);
+            console.log(this.map.grid);
         }
     }]);
 

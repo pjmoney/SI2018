@@ -87,7 +87,6 @@ export default class mapService{
 
     //draw package
     drawPackage(packages){
-        console.log(packages);
 
         let store = document.getElementById('store');
         let storeul = document.getElementById('storeul')
@@ -115,5 +114,13 @@ export default class mapService{
             ' x: ' + packages[x].position.x + 
             ' y: ' + packages[x].position.y + ')';
         }
+    }
+
+    //draw forklift
+    drawForklift(fork){
+        console.log("elo");
+        this.setGrid(fork.position.x,fork.position.y, this.map.parts.forklift);
+        this.drawSprite(fork.position.x, fork.position.y, this.map.parts.forklift);
+        console.log(this.map.grid);
     }
 }
