@@ -1,5 +1,5 @@
 import MapController from "@/controllers/MapController";
-import neutral from "@/controllers/NeutralController"
+import neutral from "@/controllers/NeuralController"
 
 export default {
   name: "MainComponent",
