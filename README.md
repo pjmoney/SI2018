@@ -1,14 +1,29 @@
-Forklift AI v0.1.0
+# forklift-ai
 
-Install:
-
+## Project setup
 ```
 npm install
 ```
 
-
-Developer build: 
-
+### Compiles and hot-reloads for development
 ```
-npm run dev
-``` 
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
