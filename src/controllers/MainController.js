@@ -16,5 +16,6 @@ export default {
   mounted() {
     MapController.init()
     this.grid = MapController.grid();
+  
   }
 };
