@@ -28,8 +28,7 @@ export default {
         };
         if (x >= map.height * (3 / 4) && y < map.width / 2) {
           cell.type = "smallstore";
-        }
-        if (x >= map.height * (3 / 4)) {
+        } else if (x >= map.height * (3 / 4)) {
           cell.type = "bigstore";
         }
         grid[x][y] = cell;
