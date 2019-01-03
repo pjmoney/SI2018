@@ -1,7 +1,7 @@
 export default {
   /**
     * [length, height, width]
-    */
+  */
   data: [
     { input: [20,20,20], output: [1] },
     { input: [15,5,5], output: [1] },
