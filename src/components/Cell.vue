@@ -1,11 +1,13 @@
 <template>
-  <div v-bind:style="style">
-    <img v-if="type.type == 'forklift'" src="../assets/forklift.png" />
+  <div :style="style">
+    <img v-if="type.type == 'forklift'" :style="{ transform: transform }" src="../assets/forklift.png" />
     <img v-if="type.type == 'package'" src="../assets/package.png" />
   </div>
 </template>
 
 <script>
+import Forklift from "@/models/ForkliftModel"
+
 export default {
   props: ["type"],
   data() {
@@ -13,13 +15,42 @@ export default {
       style: {
         background: "#ccc",
         height: "100%",
-        width: "100%"
-      }
+        width: "100%",
+      },
+      forklift: Forklift,
+      transform: ""
+    }
+  },
+  watch: {
+    forklift: {
+      handler: function () {
+        this.direction()
+      },
+      deep: true
     }
   },
   created() {
     if(this.type.type == "smallstore") this.style.background = "#a7c3f2"
     if(this.type.type == "bigstore") this.style.background = "#efd9a5"
+    this.direction()
+  },
+  methods:{
+    direction(){
+      switch(this.forklift.direction){
+        case "S":
+          this.transform = "rotate(90deg)"
+          break
+        case "N":
+          this.transform = "rotate(-90deg)"
+          break
+        case "E":
+          this.transform = "rotate(0deg)"
+          break
+        case "W":
+          this.transform = "scaleX(-1)"
+          break
+      }
+    }
   }
 }
 </script>
