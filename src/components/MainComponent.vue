@@ -1,7 +1,7 @@
 <template>
 <div id="map" v-bind:style="mapStyle">
   <div v-for="g in grid" id="cell">
-    <Cell type="type"/>
+    <Cell :type="g"/>
   </div>
 </div>
 

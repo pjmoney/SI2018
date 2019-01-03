@@ -4,6 +4,7 @@
 
 <script>
 export default {
+  props: ["type"],
   data() {
     return {
       style: {
@@ -12,7 +13,7 @@ export default {
         width: "100%"
       }
     }
-  }
+  },
 }
 </script>
 
