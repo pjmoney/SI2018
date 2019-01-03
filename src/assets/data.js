@@ -34,6 +34,7 @@ export default {
     { input: [12,3,2], output: [1] },
     { input: [14,11,9], output: [1] },
     { input: [4,2,18], output: [1] },
+    { input: [11,3,9], output: [1] },
     { input: [5,9,14], output: [1] },
     { input: [12,5,5], output: [1] },
     { input: [11,4,20], output: [1] },

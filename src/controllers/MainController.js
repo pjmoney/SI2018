@@ -1,29 +1,27 @@
 import MapController from "@/controllers/MapController";
-import neutral from "@/controllers/NeuralController"
+import Floor from "@/components/Floor";
+import Forklift from "@/components/Forklift";
+import BigStore from "@/components/BigStore";
+import SmallStore from "@/components/SmallStore";
+// import neutral from "@/controllers/NeuralController";
 
 export default {
   name: "MainComponent",
-
-  data(){
-    return{
+  components: {
+    "floor": Floor,
+    "forklift": Forklift,
+    "bigstore": BigStore,
+    "smallstore": SmallStore
+  },
+  data() {
+    return {
       mapStyle: MapController.mapStyle,
-      cellStyle: MapController.cellStyle
+      grid: []
     }
   },
-  methods:{
-    generate: function (){
-    }
+  methods: {
   },
-  mounted(){
-    let l = Math.floor(Math.random() * 20) + 1
-      let w = Math.floor(Math.random() * 20) + 1
-      let h = Math.floor(Math.random() * 20) + 1
-      let result = {
-        length: l,
-        height: h,
-        width: w,
-        destination: neutral.runNetwork(l,h,w)
-      }
-      console.log(result)
+  mounted() {
+    this.grid = MapController.init();
   }
 };
