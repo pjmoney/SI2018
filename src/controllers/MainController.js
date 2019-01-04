@@ -1,5 +1,6 @@
 import MapController from "@/controllers/MapController";
-import Cell from "@/components/Cell"
+import ForkliftController from "@/controllers/ForkliftController";
+import Cell from "@/components/Cell";
 // import neutral from "@/controllers/NeuralController";
 
 export default {
@@ -10,12 +11,18 @@ export default {
   data() {
     return {
       mapStyle: MapController.mapStyle,
-      grid: []
+      grid: [],
     };
   },
+  methods: {
+    move: function() {
+      this.grid = MapController.setMap(ForkliftController.move())
+    },
+    turn: function() {
+      this.grid = MapController.setMap(ForkliftController.turn(-1))
+    }
+  },
   mounted() {
-    MapController.init()
-    this.grid = MapController.grid();
-  
+    this.grid = MapController.init();
   }
 };

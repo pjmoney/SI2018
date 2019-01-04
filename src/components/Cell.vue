@@ -6,8 +6,6 @@
 </template>
 
 <script>
-import Forklift from "@/models/ForkliftModel"
-
 export default {
   props: ["type"],
   data() {
@@ -17,13 +15,12 @@ export default {
         height: "100%",
         width: "100%",
       },
-      forklift: Forklift,
       transform: ""
     }
   },
   watch: {
-    forklift: {
-      handler: function () {
+    type: {
+      handler: function() {
         this.direction()
       },
       deep: true
@@ -36,7 +33,7 @@ export default {
   },
   methods:{
     direction(){
-      switch(this.forklift.direction){
+      switch(this.type.direction){
         case "S":
           this.transform = "rotate(90deg)"
           break

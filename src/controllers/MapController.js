@@ -1,11 +1,13 @@
 import map from "@/models/MapModel";
+import ForkliftController from "./ForkliftController";
+import PackageController from "./PackageController";
 
 export default {
   mapStyle: {
     width: map.width * map.cellWidth + "px",
     height: map.height * map.cellHeight + "px"
   },
-  packages:[],
+  packages: [],
 
   grid: function() {
     let grid = [];
@@ -35,34 +37,17 @@ export default {
         grid[x][y] = cell;
       }
     }
-    grid[11][0].type = "forklift";
-    let random = Math.floor((Math.random()*12) + 4);
-    let x = random;
-    while(x > 0){
-      let rand_x = Math.floor((Math.random()*map.width) + 0);
-      let rand_y = Math.floor((Math.random()*map.height) + 0); 
-      let Package = {
-        id: x,
-        length: Math.floor((Math.random()*100) + 1),
-        height: Math.floor((Math.random()*100) + 1),
-        width: Math.floor((Math.random()*100) + 1),
-        x: rand_x,
-        y: rand_y
-      };
-      if(grid[rand_x][rand_y].type == "floor"){
-        grid[rand_x][rand_y] = Package;
-        grid[rand_x][rand_y].type = "package";
-        this.packages.push(grid[rand_x][rand_y])
-        x--;
-      }
-
-      else {
-        continue;
-      }
-      console.log(this.packages)
-      console.log(`_Package No.${x}_\nDimensions:length: ${grid[rand_x][rand_y].length} height: ${grid[rand_x][rand_y].height} width: ${grid[rand_x][rand_y].width}\n---------------------------`)
-    }
+    this.setMap(ForkliftController.forklift);
+    this.packages = PackageController.random();
+    this.setMap(this.packages);
     map.grid = grid;
-    return map.grid;
+    return this.grid();
+  },
+  //set new elements on map
+  setMap: function(grid) {
+    grid.forEach(e => {
+      map.grid[e.x][e.y] = e;
+    });
+    return this.grid();
   }
 };
