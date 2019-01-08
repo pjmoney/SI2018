@@ -1,6 +1,9 @@
 import MapController from "@/controllers/MapController";
 import ForkliftController from "@/controllers/ForkliftController";
+import PackageController from "@/controllers/PackageController"
+import Forklift from "@/models/ForkliftModel";
 import Cell from "@/components/Cell";
+import AstarController from "@/controllers/AstarController";
 // import neutral from "@/controllers/NeuralController";
 
 export default {
@@ -12,6 +15,7 @@ export default {
     return {
       mapStyle: MapController.mapStyle,
       grid: [],
+      forklift: Forklift
     };
   },
   methods: {

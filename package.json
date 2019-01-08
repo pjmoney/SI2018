@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vue/cli": "^3.3.0",
     "brain.js": "^1.6.0",
     "vue": "^2.5.17"
   },

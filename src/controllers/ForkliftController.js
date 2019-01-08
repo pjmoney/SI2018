@@ -1,5 +1,7 @@
 import Forklift from "@/models/ForkliftModel";
 import map from "@/models/MapModel";
+import PackageController from "@/controllers/PackageController";
+import AstarController from "@/controllers/AstarController";
 
 export default {
   forklift: [Forklift],
@@ -9,15 +11,26 @@ export default {
         if (Forklift.x - 1 >= 0) {
           let x = Forklift.x - 1;
           let y = Forklift.y;
-          if (map.grid[x][y].type == "package" && Forklift.carry == null && x < 12) {
+          if (map.grid[x][y].type == "package" && Forklift.carry == null) {
             Forklift.carry = map.grid[x][y];
             map.grid[x][y] = this.clear("floor", x, y);
-          } else if (map.grid[x][y].type != ("floor" || "package") && Forklift.carry != null && x >= 12){
+          } else if (map.grid[x][y].type != ("floor") && map.grid[x][y].type != "package" && Forklift.carry != null){
             map.grid[x][y] = Forklift.carry;
+            PackageController.drop(Forklift.carry)
             Forklift.carry = null;
           } else if (map.grid[x][y].type != "package"){
-            map.grid[Forklift.x][Forklift.y] = this.clear(map.grid[x][y].type, Forklift.x, Forklift.y);
-            Forklift.x = x;
+            if (x >= 12 && y < map.width / 2 ) {
+              map.grid[Forklift.x][Forklift.y] = this.clear("smallstore", Forklift.x, Forklift.y);
+              Forklift.x = x;
+            }
+            else if (x >= 12 && y >= map.width / 2) {
+              map.grid[Forklift.x][Forklift.y] = this.clear("bigstore", Forklift.x, Forklift.y);
+              Forklift.x = x;
+            }
+            else {
+              map.grid[Forklift.x][Forklift.y] = this.clear(map.grid[x][y].type, Forklift.x, Forklift.y);
+              Forklift.x = x;
+            }
           }
         }
         break;
@@ -25,15 +38,27 @@ export default {
         if (Forklift.y + 1 < map.width) {
           let x = Forklift.x;
           let y = Forklift.y + 1;
-          if (map.grid[x][y].type == "package" && Forklift.carry == null && x < 12) {
+          //bierzemy paczke
+          if (map.grid[x][y].type == "package" && Forklift.carry == null) {
             Forklift.carry = map.grid[x][y];
             map.grid[x][y] = this.clear("floor", x, y);
-          } else if (map.grid[x][y].type != ("floor" || "package") && Forklift.carry != null && x >= 12){
+          } else if (map.grid[x][y].type != ("floor") && map.grid[x][y].type != "package" && Forklift.carry != null){
             map.grid[x][y] = Forklift.carry;
+            PackageController.drop(Forklift.carry)
             Forklift.carry = null;
           } else if (map.grid[x][y].type != "package"){
-            map.grid[Forklift.x][Forklift.y] = this.clear(map.grid[x][y].type, Forklift.x, Forklift.y);
-            Forklift.y = y;
+            if (x >= 12 && y < map.width / 2 ) {
+              map.grid[Forklift.x][Forklift.y] = this.clear("smallstore", Forklift.x, Forklift.y);
+              Forklift.y = y;
+            }
+            else if (x >= 12 && y >= map.width / 2) {
+              map.grid[Forklift.x][Forklift.y] = this.clear("bigstore", Forklift.x, Forklift.y);
+              Forklift.y = y;
+            }
+            else {
+              map.grid[Forklift.x][Forklift.y] = this.clear(map.grid[x][y].type, Forklift.x, Forklift.y);
+              Forklift.y = y;
+            }
           }
         }
         break;
@@ -41,15 +66,26 @@ export default {
         if (Forklift.x + 1 < map.height) {
           let x = Forklift.x + 1;
           let y = Forklift.y;
-          if (map.grid[x][y].type == "package" && Forklift.carry == null && x < 12) {
+          if (map.grid[x][y].type == "package" && Forklift.carry == null) {
             Forklift.carry = map.grid[x][y];
             map.grid[x][y] = this.clear("floor", x, y);
-          } else if (map.grid[x][y].type != ("floor" || "package") && Forklift.carry != null && x >= 12){
+          } else if (map.grid[x][y].type != ("floor") && map.grid[x][y].type != "package" && Forklift.carry != null){
             map.grid[x][y] = Forklift.carry;
+            PackageController.drop(Forklift.carry)
             Forklift.carry = null;
           } else if (map.grid[x][y].type != "package"){
-            map.grid[Forklift.x][Forklift.y] = this.clear(map.grid[x][y].type, Forklift.x, Forklift.y);
-            Forklift.x = x;
+            if (x >= 12 && y < map.width / 2 ) {
+              map.grid[Forklift.x][Forklift.y] = this.clear("smallstore", Forklift.x, Forklift.y);
+              Forklift.x = x;
+            }
+            else if (x >= 12 && y >= map.width / 2) {
+              map.grid[Forklift.x][Forklift.y] = this.clear("bigstore", Forklift.x, Forklift.y);
+              Forklift.x = x;
+            }
+            else {
+              map.grid[Forklift.x][Forklift.y] = this.clear(map.grid[x][y].type, Forklift.x, Forklift.y);
+              Forklift.x = x;
+            }
           }
         }
         break;
@@ -57,19 +93,31 @@ export default {
         if (Forklift.y - 1 >= 0) {
           let x = Forklift.x;
           let y = Forklift.y - 1;
-          if (map.grid[x][y].type == "package" && Forklift.carry == null && x < 12) {
+          if (map.grid[x][y].type == "package" && Forklift.carry == null) {
             Forklift.carry = map.grid[x][y];
             map.grid[x][y] = this.clear("floor", x, y);
-          } else if (map.grid[x][y].type != ("floor" || "package") && Forklift.carry != null && x >= 12){
+          } else if (map.grid[x][y].type != ("floor") && map.grid[x][y].type != "package" && Forklift.carry != null){
             map.grid[x][y] = Forklift.carry;
+            PackageController.drop(Forklift.carry)
             Forklift.carry = null;
           } else if (map.grid[x][y].type != "package"){
-            map.grid[Forklift.x][Forklift.y] = this.clear(map.grid[x][y].type, Forklift.x, Forklift.y);
-            Forklift.y = y;
+            if (x >= 12 && y < map.width / 2 ) {
+              map.grid[Forklift.x][Forklift.y] = this.clear("smallstore", Forklift.x, Forklift.y);
+              Forklift.y = y;
+            }
+            else if (x >= 12 && y >= map.width / 2) {
+              map.grid[Forklift.x][Forklift.y] = this.clear("bigstore", Forklift.x, Forklift.y);
+              Forklift.y = y;
+            }
+            else {
+              map.grid[Forklift.x][Forklift.y] = this.clear(map.grid[x][y].type, Forklift.x, Forklift.y);
+              Forklift.y = y;
+            }
           }
         }
         break;
     }
+    console.log(AstarController.search(Forklift, PackageController.packages))
     return [Forklift];
   },
   turn: function(direction) {

@@ -38,8 +38,7 @@ export default {
       }
     }
     this.setMap(ForkliftController.forklift);
-    this.packages = PackageController.random();
-    this.setMap(this.packages);
+    this.setMap(PackageController.random());
     map.grid = grid;
     return this.grid();
   },
