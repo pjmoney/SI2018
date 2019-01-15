@@ -117,7 +117,7 @@ export default {
         }
         break;
     }
-    console.log(AstarController.search(Forklift, PackageController.packages))
+    console.log(AstarController.search(Forklift, PackageController.packages[0], map))
     return [Forklift];
   },
   turn: function(direction) {
@@ -158,7 +158,8 @@ export default {
     return {
       type: type,
       x: x,
-      y: y
+      y: y,
+      cost: 1
     };
   }
 };

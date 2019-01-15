@@ -14,7 +14,8 @@ export default {
         height: Math.floor(Math.random() * 100 + 1),
         width: Math.floor(Math.random() * 100 + 1),
         x: x,
-        y: y
+        y: y,
+        cost: 1
       };
       if (map.grid[x][y].type == "floor") {
         map.grid[x][y] = Package;

@@ -4,4 +4,5 @@ export default {
   y: 0,
   type: "forklift",
   carry: null,
+  cost: 1
 };

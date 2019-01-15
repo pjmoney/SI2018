@@ -27,7 +27,8 @@ export default {
         let cell = {
           x: x,
           y: y,
-          type: "floor"
+          type: "floor",
+          cost: Math.floor(Math.random() * 3 + 1),
         };
         if (x >= map.height * (3 / 4) && y < map.width / 2) {
           cell.type = "smallstore";
