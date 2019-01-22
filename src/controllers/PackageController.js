@@ -14,20 +14,20 @@ export default {
         height: Math.floor(Math.random() * 100 + 1),
         width: Math.floor(Math.random() * 100 + 1),
         x: x,
-        y: y,
-        cost: 1
+        y: y
       };
       if (map.grid[x][y].type == "floor") {
-        map.grid[x][y] = Package;
-        map.grid[x][y].type = "package";
-        this.packages.push(map.grid[x][y]);
+        map.grid[x][y].package = Package;
+        map.grid[x][y].isPackage = true;
+        this.packages.push(map.grid[x][y].package);
         count--;
       }
     }
     return this.packages;
   },
-  drop: function (pkg) {
+  drop: function (pckg) {
     let count = 0
+    let pkg = pckg.package
     this.packages.forEach(e => {
       if (e.id == pkg.id) {
         this.packages.splice(count,1)

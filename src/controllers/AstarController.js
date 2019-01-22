@@ -1,68 +1,87 @@
 import map from "@/models/MapModel";
-//https://briangrinstead.com/blog/astar-search-algorithm-in-javascript/
-export default {
-  fringe: [],
-  explored: [],
-  ret:[],
-  search: function(current, target) {
-    current.f = this.distance(current,target) + map.grid[current.x][current.y].cost
-    current.g = map.grid[current.x][current.y].cost
-    current.h = this.distance(current,target)
-    this.fringe.push(current)
-    while (this.fringe.length > 0){
-      console.log("Petla:", this.fringe.length)
-      let low = 0;
-      for(let i = 0; i < this.fringe.length; i++){
-        if(this.fringe[i].f < this.fringe[low].f) { low = i }
-      }
-      let currentNode = this.fringe[low]
-      if(currentNode.x == target.x && currentNode.y == target.y) {
-        console.log(currentNode)
-        console.log("Jestem na miejscu")
-        this.fringe = []
-        this.explored = []
-        this.ret = []
-        return this.ret.reverse();
-      }
-      console.log("usuwam node z fringe")
-      this.removeFringe(currentNode)
-      console.log("dodaje node do explored")
-      this.explored.push(currentNode)
+import forklift from "@/models/ForkliftModel"
 
-      console.log("szukam sasiadow")
-      let neighbors = this.findNeigh(currentNode)
+export default {
+  openList: [],
+  closedList: [],
+  init: function(map) {
+    let grid = [[]]
+    for(var x = 0; x < map.length; x++) {
+      grid[x] = []
+      for(var y = 0; y < map[x].length; y++) {
+        let gridPat = {
+          f: 0,
+          g: 0,
+          h: 0,
+          parent: null,
+          visited: false,
+          closed: false,
+          isPackage: map[x][y].isPackage,
+          x: x,
+          y: y
+        }
+        grid[x][y] = gridPat
+      }
+    }
+    return grid
+  },
+  search: function(start, end) {
+    start.f = 0,
+    start.g = 0,
+    start.h = 0
+    let grid = this.init(map.grid)
+    grid[end.x][end.y].isPackage = false
+    this.openList.push(start)
+    while (this.openList.length > 0) {
+      let lowInd = 0
+      for (let i = 0; i < this.openList.length; i++) {
+        if (this.openList[i].f < this.openList[lowInd].f) lowInd = i
+      }
+      let currentNode = this.openList[lowInd]
+
+      if(currentNode.x == end.x && currentNode.y == end.y) {
+        // console.log("Na miejscu!")
+        let curr = currentNode;
+        let pos = {
+          x: forklift.x,
+          y: forklift.y
+        }
+        let ret = [];
+        while(curr.parent) {
+          ret.push(curr);
+          curr = curr.parent;
+        }
+        this.closedList = []
+        this.openList = []
+        ret.push(pos)
+        ret = ret.reverse()
+        // console.log("Jak ide:")
+        // ret.forEach(e => {
+        //   console.log("x: ",e.x,"y: ", e.y)
+        // })
+        return this.actions(ret);
+      }
+      this.openList.splice(lowInd, 1)
+      currentNode.closed = true
+      let neighbors = this.neighbors(grid, currentNode)
 
       for(var i=0; i<neighbors.length;i++) {
         var neighbor = neighbors[i];
-        if(this.findExplored(neighbor)) {
-          console.log("sasiad jest w explored")
-          // not a valid node to process, skip to next neighbor
+        if(neighbor.closed || neighbor.isPackage) {
           continue;
         }
-        // g score is the shortest distance from start to current node, we need to check if
-        //   the path we have arrived at this neighbor is the shortest one we have seen yet
-        var gScore = this.distance(current, currentNode) + 1; // 1 is the distance from a node to it's neighbor
-        console.log("wyliczam gscore",gScore)
+        var gScore = currentNode.g + 1; // 1 is the distance from a node to it's neighbor
         var gScoreIsBest = false;
-
-        if(!this.findFringe(neighbor)) {
-          // This the the first time we have arrived at this node, it must be the best
-          // Also, we need to take the h (heuristic) score since we haven't done so yet
+        if(!neighbor.visited) {
           gScoreIsBest = true;
-          neighbor.h = this.distance(neighbor, target);
-          console.log("wyliczam distance do targeta z sasiada",neighbor.h)
-          this.fringe.push(neighbor);
+          neighbor.h = this.distance(neighbor, end);
+          neighbor.visited = true
+          this.openList.push(neighbor);
         }
         else if(gScore < neighbor.g) {
-          // We have already seen the node, but last time it had a worse g (distance from start)
-          console.log("gscore mniejsze niz neibor.g",gScore)
           gScoreIsBest = true;
         }
-
         if(gScoreIsBest) {
-          // Found an optimal (so far) path to this node.   Store info on how we got here and
-          //  just how good it really is...
-          console.log("ustawiam rodzica sasiada na aktualny node")
           neighbor.parent = currentNode;
           neighbor.g = gScore;
           neighbor.f = neighbor.g + neighbor.h;
@@ -71,58 +90,116 @@ export default {
     }
     return []
   },
-  distance: function(forklift, pkg){
-    let x = Math.abs(forklift.x - pkg.x)
-    let y = Math.abs(forklift.y - pkg.y)
+  distance: function(start, end){
+    let x = Math.abs(start.x - end.x)
+    let y = Math.abs(start.y - end.y)
     return x + y;
   },
-  compareNumbers: function(a, b) {
-   return a - b
- },
- findNeigh: function(node) {
+ neighbors: function(grid, node) {
     let ret = []
     let x = node.x;
     let y = node.y;
-
-    if(map.grid[x-1] && map.grid[x-1][y]) {
-      ret.push(map.grid[x-1][y]);
+    if(grid[x-1] && grid[x-1][y]) {
+      ret.push(grid[x-1][y]);
     }
-    if(map.grid[x+1] && map.grid[x+1][y]) {
-      ret.push(map.grid[x+1][y]);
+    if(grid[x+1] && grid[x+1][y]) {
+      ret.push(grid[x+1][y]);
     }
-    if(map.grid[x][y-1] && map.grid[x][y-1]) {
-      ret.push(map.grid[x][y-1]);
+    if(grid[x][y-1] && grid[x][y-1]) {
+      ret.push(grid[x][y-1]);
     }
-    if(map.grid[x][y+1] && map.grid[x][y+1]) {
-      ret.push(map.grid[x][y+1]);
+    if(grid[x][y+1] && grid[x][y+1]) {
+      ret.push(grid[x][y+1]);
     }
     return ret;
  },
- removeFringe: function(node){
-   let count = 0
-   this.fringe.forEach(e => {
-     if (e.x == node.x && e.y == node.y) {
-       this.fringe.splice(count,1)
+ actions: function(ret) {
+   let actions = []
+   let dir = forklift.direction
+   for(let i = 0; i < ret.length; i++){
+     if (i + 1 >= ret.length) return actions
+     switch(dir){
+       case "E":
+          if(ret[i + 1].x < ret[i].x) {
+            actions.push("turn left")
+            actions.push("move")
+            dir = "N"
+          } else if (ret[i + 1].x > ret[i].x) {
+            actions.push("turn right")
+            actions.push("move")
+            dir = "S"
+          } else {
+            if (ret[i + 1].y > ret[i].y) actions.push("move")
+            else {
+              actions.push("turn right")
+              action.push("turn right")
+              actions.push("move")
+              dir = "W"
+            }
+          }
+          break
+        case "N":
+           if(ret[i + 1].x < ret[i].x) {
+             actions.push("move")
+           } else if (ret[i + 1].x > ret[i]) {
+             actions.push("turn right")
+             action.push("turn right")
+             actions.push("move")
+             dir = "S"
+           } else {
+             if (ret[i + 1].y > ret[i].y) {
+               actions.push("turn right")
+               actions.push("move")
+               dir = "E"
+             } else {
+               actions.push("turn left")
+               actions.push("move")
+               dir = "W"
+             }
+           }
+           break
+         case "S":
+            if(ret[i + 1].x < ret[i].x) {
+              actions.push("turn right")
+              action.push("turn right")
+              actions.push("move")
+              dir = "N"
+            } else if (ret[i + 1].x > ret[i]) {
+              actions.push("move")
+            } else {
+              if (ret[i + 1].y > ret[i].y) {
+                actions.push("turn left")
+                actions.push("move")
+                dir = "E"
+              } else {
+                actions.push("turn right")
+                actions.push("move")
+                dir = "W"
+              }
+            }
+            break
+          case "W":
+             if(ret[i + 1].x < ret[i].x) {
+               actions.push("turn right")
+               actions.push("move")
+               dir = "N"
+             } else if (ret[i + 1].x > ret[i]) {
+               actions.push("turn right")
+               actions.push("move")
+               dir = "S"
+             } else {
+               if (ret[i + 1].y > ret[i].y) {
+                 actions.push("turn left")
+                 actions.push("turn left")
+                 actions.push("move")
+                 dir = "E"
+               } else{
+                 actions.push("move")
+               }
+             }
+             break
      }
-     count++
-   })
- },
- findExplored: function(node){
-   let count = 0
-   this.explored.forEach(e => {
-     if (e.x == node.x && e.y == node.y) {
-       return true
-     }
-     count++
-   })
- },
- findFringe: function(node){
-   let count = 0
-   this.fringe.forEach(e => {
-     if (e.x == node.x && e.y == node.y) {
-       return true
-     }
-     count++
-   })
+   }
+   return actions
  }
 };

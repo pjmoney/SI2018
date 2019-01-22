@@ -29,6 +29,8 @@ export default {
           y: y,
           type: "floor",
           cost: Math.floor(Math.random() * 3 + 1),
+          isForklift: false,
+          isPackage: false
         };
         if (x >= map.height * (3 / 4) && y < map.width / 2) {
           cell.type = "smallstore";
@@ -41,13 +43,16 @@ export default {
     this.setMap(ForkliftController.forklift);
     this.setMap(PackageController.random());
     map.grid = grid;
+    map.gridPub = this.grid()
     return this.grid();
   },
   //set new elements on map
   setMap: function(grid) {
     grid.forEach(e => {
-      map.grid[e.x][e.y] = e;
+      if (e.type == "forklift") map.grid[e.x][e.y].isForklift = true;
+        else map.grid[e.x][e.y].isForklift = false
+     if (e.type == "package") map.grid[e.x][e.y].isPackage = true;
     });
-    return this.grid();
+    this.grid();
   }
 };

@@ -1,3 +1,4 @@
+import map from "@/models/MapModel"
 import MapController from "@/controllers/MapController";
 import ForkliftController from "@/controllers/ForkliftController";
 import PackageController from "@/controllers/PackageController"
@@ -14,19 +15,19 @@ export default {
   data() {
     return {
       mapStyle: MapController.mapStyle,
-      grid: [],
+      grid: map.gridPub,
       forklift: Forklift
     };
   },
   methods: {
     move: function() {
-      this.grid = MapController.setMap(ForkliftController.move())
+      ForkliftController.start()
     },
     turn: function() {
-      this.grid = MapController.setMap(ForkliftController.turn(-1))
+      ForkliftController.turn(-1)
     }
   },
-  mounted() {
-    this.grid = MapController.init();
+  beforeCreate() {
+    MapController.init();
   }
 };

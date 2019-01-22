@@ -1,11 +1,12 @@
 <template>
   <div :style="style">
-    <img v-if="type.type == 'forklift'" :style="{ transform: transform }" src="../assets/forklift.png" />
-    <img v-if="type.type == 'package'" src="../assets/package.png" />
+    <img v-if="type.isForklift" :style="{ transform: transform }" src="../assets/forklift.png" />
+    <img v-if="type.isPackage" src="../assets/package.png" />
   </div>
 </template>
 
 <script>
+import Forklift from "@/models/ForkliftModel"
 export default {
   props: ["type"],
   data() {
@@ -15,11 +16,12 @@ export default {
         height: "100%",
         width: "100%",
       },
-      transform: ""
+      transform: "",
+      forklift: Forklift
     }
   },
   watch: {
-    type: {
+    forklift: {
       handler: function() {
         this.direction()
       },
@@ -29,13 +31,13 @@ export default {
   created() {
     if(this.type.type == "smallstore") this.style.background = "#a7c3f2"
     if(this.type.type == "bigstore") this.style.background = "#efd9a5"
-    if(this.type.type == "floor" && this.type.cost == 3) this.style.background = "#aaa"
-    if(this.type.type == "floor" && this.type.cost == 2) this.style.background = "#8b8b8b"
+    //if(this.type.type == "floor" && this.type.cost == 3) this.style.background = "#aaa"
+    //if(this.type.type == "floor" && this.type.cost == 2) this.style.background = "#8b8b8b"
     this.direction()
   },
   methods:{
     direction(){
-      switch(this.type.direction){
+      switch(this.forklift.direction){
         case "S":
           this.transform = "rotate(90deg)"
           break

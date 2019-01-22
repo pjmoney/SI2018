@@ -3,5 +3,6 @@ export default {
   height: 16,
   cellWidth: 32,
   cellHeight: 32,
-  grid: [[]]
+  grid: [[]],
+  gridPub: []
 };
