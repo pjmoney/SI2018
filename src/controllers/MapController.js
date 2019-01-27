@@ -16,7 +16,7 @@ export default {
         grid.push(map.grid[x][y]);
       }
     }
-    return grid;
+    map.gridPub = grid;
   },
 
   init: function() {
@@ -43,15 +43,12 @@ export default {
     this.setMap(ForkliftController.forklift);
     this.setMap(PackageController.random());
     map.grid = grid;
-    map.gridPub = this.grid()
-    return this.grid();
   },
   //set new elements on map
   setMap: function(grid) {
     grid.forEach(e => {
       if (e.type == "forklift") map.grid[e.x][e.y].isForklift = true;
-        else map.grid[e.x][e.y].isForklift = false
-     if (e.type == "package") map.grid[e.x][e.y].isPackage = true;
+      if (e.type == "package") map.grid[e.x][e.y].isPackage = true;
     });
     this.grid();
   }
