@@ -13,8 +13,7 @@
 
 <style scoped>
 #map{
- 
-  background: black
+  
 }
 #cell{
   display: inline-block;

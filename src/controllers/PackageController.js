@@ -6,10 +6,14 @@ const contents = ["Food", "Chemicals", "Clothes"]
 function makeid(length) {
   let text = "";
   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let date = Date.now()
+  let date = new Date()
+  date = date.getMilliseconds()
   for (var i = 0; i < length; i++){
     text += possible.charAt(Math.floor(Math.random() * possible.length));
-    if(i%3 == 0) text += "/"}
+    if(i%3 == 0) text += "/"
+  }
+
+  text += date
 
   return text;
 }
@@ -19,12 +23,12 @@ export default {
   delivered: [],
   
   random() {
-    let count = Math.floor(Math.random() * 8 + 5);
+    let count = Math.floor(Math.random() * 6 + 4);
     while (count > 0) {
       let x = Math.floor(Math.random() * map.width + 0);
       let y = Math.floor(Math.random() * map.height + 0);
       let Package = {
-        id: makeid(9),
+        id: makeid(4),
         length: Math.floor(Math.random() * 10 + 1),
         height: Math.floor(Math.random() * 10 + 1),
         width: Math.floor(Math.random() * 10 + 1),
@@ -56,6 +60,7 @@ export default {
       count++
     })
   },
+
   //
   //
   // ALGORYTM GENETYCZNY
@@ -69,7 +74,7 @@ export default {
       let x = Math.floor(Math.random() * map.width + 0);
       let y = Math.floor(Math.random() * map.height + 0);
       let Package = {
-        id: makeid(9),
+        id: makeid(4),
         length: Math.floor(Math.random() * 10 + 1),
         height: Math.floor(Math.random() * 10 + 1),
         width: Math.floor(Math.random() * 10 + 1),
@@ -145,7 +150,7 @@ export default {
       
         function cross (parent1, parent2) {
           let child1 = {
-            id: makeid(9),
+            id: makeid(4),
             width: parent1.width,
             height: parent2.length,
             length: parent1.length,
@@ -157,7 +162,7 @@ export default {
               y: 0
           }}
           let child2 = {
-            id: makeid(9),
+            id: makeid(4),
             width: parent2.height,
             height: parent2.length,
             length: parent1.width,
@@ -196,7 +201,7 @@ export default {
 
         while(counter < 300){
             geneticAI.evolve()
-            if(geneticAI.bestScore() > lastBestScore && geneticAI.bestScore() > 3) {
+            if(geneticAI.bestScore() > lastBestScore && geneticAI.bestScore() > 4) {
 
               lastBestScore = geneticAI.bestScore()
               lastBestPackage = geneticAI.best()

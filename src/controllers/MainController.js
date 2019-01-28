@@ -13,7 +13,8 @@ export default {
     return {
       mapStyle: MapController.mapStyle,
       grid: map.gridPub,
-      forklift: Forklift
+      forklift: Forklift,
+      genetic: ''
     };
   },
   methods: {

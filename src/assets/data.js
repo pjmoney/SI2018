@@ -160,5 +160,6 @@ export default {
     { input: [6,7,7], output: [0] },
     { input: [5,3,7], output: [0] },
     { input: [5,3,5], output: [0] },
+    { input: [17,16,15], output: [1] },
   ]
 }

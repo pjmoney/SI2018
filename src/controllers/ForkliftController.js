@@ -182,6 +182,7 @@ export default {
   },
   checkPackage(p) {
     if (neutral.runNetwork(p.length, p.height, p.width) == "small"){
+      p.size = "SMALL"
       for (let x = 15; x > 11; x--){
         for (let y = 0; y < 8; y++){
           if (!map.grid[x][y].isPackage) {
@@ -194,6 +195,7 @@ export default {
         }
       }
     } else {
+      p.size = "BIG"
       for (let x = 15; x > 11; x--){
         for (let y = 8; y < 16; y++){
           if (!map.grid[x][y].isPackage) {

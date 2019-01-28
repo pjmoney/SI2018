@@ -1,7 +1,7 @@
 import map from "@/models/MapModel";
 import ForkliftController from "./ForkliftController";
 import PackageController from "./PackageController";
-
+import MainController from "@/controllers/MainController"
 
 export default {
   mapStyle: {
@@ -42,8 +42,16 @@ export default {
       }
     }
     this.setMap(ForkliftController.forklift);
-    //this.setMap(PackageController.random());
-    this.setMap(PackageController.spawnOnlyBig());
+     if(MainController.genetic){
+       console.log(MainController.genetic)
+      this.setMap(PackageController.spawnOnlyBig());
+     } else {
+      console.log(MainController.genetic)
+       this.setMap(PackageController.random());
+     }
+   
+    
+    
     map.grid = grid;
    
   },
