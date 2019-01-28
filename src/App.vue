@@ -14,7 +14,7 @@
         <v-card-title class="headline">Algorytm genetyczny?</v-card-title>
 
         <v-card-text>
-          Czy chcesz użyć algorytmu genetycznego do wygenerowania tylko dużych paczek?
+           Czy chcesz wygenerować duże paczki, korzystając z algorytmu genetycznego?
         </v-card-text>
 
         <v-card-actions>
