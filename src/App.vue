@@ -14,7 +14,7 @@
         <v-card-title class="headline">Algorytm genetyczny?</v-card-title>
 
         <v-card-text>
-          Czy chcesz użyć algorytmu genetycznego do wygenerowania tylko dużych paczek?
+          Czy chcesz wygenerować duże paczki, korzystając z algorytmu genetycznego?
         </v-card-text>
 
         <v-card-actions>
@@ -57,52 +57,79 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-    <div v-if="!dialog && !loader">
-    <div class="info" style="float:left; margin-left: 2%; font-size:18px; margin-top: -100px;">
-      <h2 class="display-3 font-weight-light">Packages</h2>
-      <!-- <table class="tg" style="undefined;table-layout: fixed; width: 564px">
-        <colgroup>
-        <col style="width: 73px">
-        <col style="width: 49px">
-        <col style="width: 48px">
-        <col style="width: 64px">
-        <col style="width: 60px">
-        <col style="width: 63px">
-        </colgroup>
-          <tr>
-            <th class="tg-1wig">ID</th>
-            <th class="tg-1wig">X</th>
-            <th class="tg-1wig">Y</th>
-            <th class="tg-1wig">WIDTH</th>
-            <th class="tg-1wig">HEIGHT</th>
-            <th class="tg-1wig">LENGTH</th>
-          </tr>
-          <tr v-for="p in packages">
-            <td class="tg-0lax">{{p.id}}</td>
-            <td class="tg-0lax">{{p.x}}</td>
-            <td class="tg-0lax">{{p.y}}</td>
-            <td class="tg-0lax">{{p.width}}</td>
-            <td class="tg-0lax">{{p.height}}</td>
-            <td class="tg-0lax">{{p.length}}</td>
-          </tr>
-        </table>-->
-        <v-data-table
-    :headers="this.headers1"
-    :items="this.packages"
-     hide-actions
-    class="elevation-1"
-  >
-    <template slot="items" slot-scope="props">
-      <td>{{ props.item.id }}</td>
-      <td class="text-xs-right">{{ props.item.x }}</td>
-      <td class="text-xs-right">{{ props.item.y }}</td>
-      <td class="text-xs-right">{{ props.item.width }}</td>
-      <td class="text-xs-right">{{ props.item.height }}</td>
-      <td class="text-xs-right">{{ props.item.length }}</td>
-    </template>
-  </v-data-table>
-        </div> 
-        <div class="info" style="float:right; margin-right: 2%;font-size:18px; margin-top: -100px;">
+     <v-container v-if="!dialog && !loader" grid-list-md text-xs-center>
+       <v-btn
+              fixed
+              dark
+              fab
+              top
+              right
+              color="red"
+              @click="refresh()"
+            >
+              <v-icon>refresh</v-icon>
+            </v-btn>
+       <v-layout row wrap align-center justify-center style="margin-top: -200px;">
+         <v-flex xs12 sm12 md12 lg12>
+         <span class="subheading font-weight-thin grey--text ">Made by Piotr Umreyan, Łukasz Tatrocki, Kacper Tomczak | &copy 2019</span>
+          </v-flex>
+          <v-flex xs4 sm4 md4 lg4>
+          </v-flex>
+          <v-flex xs4 sm4 md4 lg4>
+             <MainComponent/>
+          </v-flex>
+          <v-flex xs4 sm4 md4 lg4>
+          </v-flex>
+          </v-layout>
+      <v-layout row wrap>
+        <v-flex xs6 sm6 md6 >
+          <div class="info" >
+            <h2 class="display-3 font-weight-light">Packages</h2>
+            <!-- <table class="tg" style="undefined;table-layout: fixed; width: 564px">
+              <colgroup>
+              <col style="width: 73px">
+              <col style="width: 49px">
+              <col style="width: 48px">
+              <col style="width: 64px">
+              <col style="width: 60px">
+              <col style="width: 63px">
+              </colgroup>
+                <tr>
+                  <th class="tg-1wig">ID</th>
+                  <th class="tg-1wig">X</th>
+                  <th class="tg-1wig">Y</th>
+                  <th class="tg-1wig">WIDTH</th>
+                  <th class="tg-1wig">HEIGHT</th>
+                  <th class="tg-1wig">LENGTH</th>
+                </tr>
+                <tr v-for="p in packages">
+                  <td class="tg-0lax">{{p.id}}</td>
+                  <td class="tg-0lax">{{p.x}}</td>
+                  <td class="tg-0lax">{{p.y}}</td>
+                  <td class="tg-0lax">{{p.width}}</td>
+                  <td class="tg-0lax">{{p.height}}</td>
+                  <td class="tg-0lax">{{p.length}}</td>
+                </tr>
+              </table>-->
+              <v-data-table
+          :headers="this.headers1"
+          :items="this.packages"
+          hide-actions
+          class="elevation-1"
+        >
+          <template slot="items" slot-scope="props">
+            <td>{{ props.item.id }}</td>
+            <td class="text-xs-right">{{ props.item.x }}</td>
+            <td class="text-xs-right">{{ props.item.y }}</td>
+            <td class="text-xs-right">{{ props.item.width }}</td>
+            <td class="text-xs-right">{{ props.item.height }}</td>
+            <td class="text-xs-right">{{ props.item.length }}</td>
+          </template>
+        </v-data-table>
+              </div> 
+                 </v-flex>
+          <v-flex xs6 sm6 md6>
+            <div class="info">
       <h2 class="display-3 font-weight-light">Delivered</h2>
       <!-- <table class="tg" style="undefined;table-layout: fixed; width: 564px">
         <colgroup>
@@ -130,7 +157,7 @@
             <td class="tg-0lax">{{p.length}}</td>
           </tr>
         </table> -->
-        <v-data-table style="max-width=200px"
+        <v-data-table
     :headers="this.headers2"
     :items="this.delivered"
     hide-actions
@@ -147,13 +174,11 @@
     </template>
   </v-data-table>
     </div>
-
-    <MainComponent style="margin-top: 200px;margin: 0 auto;"/>
-    <div style="margin-top:30px">
-        <v-btn flat @click="refresh()" color="red">Refresh</v-btn>
-      </div>
-  </div>
-  <footer style="color:#707070; position: absolute; text-align:left; padding: 20px;line-height:24px;bottom:20px; bottom: 0;vertical-align: bottom; margin: 0 auto; margin-top:100px;">Made by Piotr Umreyan, Łukasz Tatrocki, Kacper Tomczak<br>&copy 2019</footer>
+     </v-flex>
+    </v-layout>
+     
+  </v-container>
+  
   </div>
   
 </template>
