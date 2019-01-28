@@ -19,12 +19,17 @@ export default {
   methods: {
     move: function() {
       this.grid = ForkliftController.start();
+     
     },
     turn: function() {
-      ForkliftController.turn(-1);;
+      ForkliftController.turn(-1);
     }
+  },
+  mounted() {
+    
   },
   beforeCreate() {
     MapController.init();
+
   }
 };

@@ -1,4 +1,5 @@
 <template>
+
 <div id="map" v-bind:style="mapStyle" @click.ctrl="turn" @click.exact="move">
   <div v-for="g in grid" id="cell">
     <Cell :type="g"/>
@@ -12,6 +13,7 @@
 
 <style scoped>
 #map{
+ 
   background: black
 }
 #cell{

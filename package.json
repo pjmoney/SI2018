@@ -10,6 +10,7 @@
   "dependencies": {
     "@vue/cli": "^3.3.0",
     "brain.js": "^1.6.0",
+    "geneticalgorithm": "^0.3.5",
     "vue": "^2.5.17"
   },
   "devDependencies": {

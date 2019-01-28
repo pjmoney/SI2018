@@ -12,7 +12,7 @@ export default {
   data() {
     return {
       style: {
-        background: "#ccc",
+        background: "#f7f7f7",
         height: "100%",
         width: "100%",
       },
@@ -29,10 +29,10 @@ export default {
     }
   },
   created() {
-    if(this.type.type == "smallstore") this.style.background = "#a7c3f2"
-    if(this.type.type == "bigstore") this.style.background = "#efd9a5"
-    if(this.type.type == "floor" && this.type.cost == 3) this.style.background = "#aaa"
-    if(this.type.type == "floor" && this.type.cost == 2) this.style.background = "#8b8b8b"
+    if(this.type.type == "smallstore") this.style.background = "#db4343"
+    if(this.type.type == "bigstore") this.style.background = "#f9b731"
+    if(this.type.type == "floor" && this.type.cost == 3) this.style.background = "#c9c9c9"
+    if(this.type.type == "floor" && this.type.cost == 2) this.style.background = "#e5e5e5"
     this.direction()
   },
   methods:{

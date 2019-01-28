@@ -2,6 +2,7 @@ import map from "@/models/MapModel";
 import ForkliftController from "./ForkliftController";
 import PackageController from "./PackageController";
 
+
 export default {
   mapStyle: {
     width: map.width * map.cellWidth + "px",
@@ -32,6 +33,15 @@ export default {
           isForklift: false,
           isPackage: false
         };
+        if (x < 5 && y == 5){
+          cell.type = "dockA";
+        }
+        if (x < 5 && y == 8){
+          cell.type = "dockB";
+        }
+        if (x < 5 && y == 11){
+          cell.type = "dockC";
+        }
         if (x >= map.height * (3 / 4) && y < map.width / 2) {
           cell.type = "smallstore";
         } else if (x >= map.height * (3 / 4)) {
@@ -41,8 +51,10 @@ export default {
       }
     }
     this.setMap(ForkliftController.forklift);
-    this.setMap(PackageController.random());
+    //this.setMap(PackageController.random());
+    this.setMap(PackageController.spawnOnlyBig());
     map.grid = grid;
+   
   },
   //set new elements on map
   setMap: function(grid) {

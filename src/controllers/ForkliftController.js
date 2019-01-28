@@ -4,6 +4,7 @@ import PackageController from "@/controllers/PackageController";
 import AstarController from "@/controllers/AstarController";
 import MapController from "@/controllers/MapController";
 import neutral from "@/controllers/NeuralController";
+import data from "../assets/data";
 
 export default {
   forklift: [Forklift],
@@ -181,6 +182,9 @@ export default {
   },
   checkPackage(p) {
     if (neutral.runNetwork(p.length, p.height, p.width) == "small"){
+
+      console.log({input:[p.length,p.height,p.width], output:[0]})
+      // data.data.unshift({input:[p.length, p.height, p.width], output:[0]})
       for (let x = 15; x > 11; x--){
         for (let y = 0; y < 8; y++){
           if (!map.grid[x][y].isPackage) {
@@ -193,6 +197,8 @@ export default {
         }
       }
     } else {
+      console.log({input:[p.length,p.height,p.width], output:[1]})
+      data.data.unshift({input:[p.length, p.height, p.width], output:[1]})
       for (let x = 15; x > 11; x--){
         for (let y = 8; y < 16; y++){
           if (!map.grid[x][y].isPackage) {
