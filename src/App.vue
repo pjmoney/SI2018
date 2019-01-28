@@ -14,7 +14,11 @@
         <v-card-title class="headline">Algorytm genetyczny?</v-card-title>
 
         <v-card-text>
+<<<<<<< HEAD
           Czy chcesz wygenerować duże paczki, korzystając z algorytmu genetycznego?
+=======
+           Czy chcesz wygenerować duże paczki, korzystając z algorytmu genetycznego?
+>>>>>>> 21925faff37dbdbe185a4342c3e7def3014bfc4c
         </v-card-text>
 
         <v-card-actions>
