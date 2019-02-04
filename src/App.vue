@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div v-show="dialog || loader" style="margin-top: -100px;">
-      <h3 class="display-2 font-weight-light">v.0.8</h3>
+      <h3 class="display-2 font-weight-light">v.0.9</h3>
       <br>
       <h1 class="display-4 font-weight-black" >AI Forklift</h1>
     </div>
@@ -14,11 +14,7 @@
         <v-card-title class="headline">Algorytm genetyczny?</v-card-title>
 
         <v-card-text>
-<<<<<<< HEAD
-          Czy chcesz wygenerować duże paczki, korzystając z algorytmu genetycznego?
-=======
-           Czy chcesz wygenerować duże paczki, korzystając z algorytmu genetycznego?
->>>>>>> 21925faff37dbdbe185a4342c3e7def3014bfc4c
+          Czy chcesz użyć algorytmu genetycznego do prawidłowego rozłożenia paczek po magazynie?
         </v-card-text>
 
         <v-card-actions>
@@ -46,13 +42,13 @@
       v-model="loader"
       hide-overlay
       persistent
-      width="700"
+      width="500"
     >
       <v-card
         color="#fff"
       >
         <v-card-text>
-          Please wait ... 
+          Generating optimal map, please wait ... 
           <v-progress-linear
             indeterminate
             color="#db4343"
@@ -128,6 +124,7 @@
             <td class="text-xs-right">{{ props.item.width }}</td>
             <td class="text-xs-right">{{ props.item.height }}</td>
             <td class="text-xs-right">{{ props.item.length }}</td>
+            <td class="text-xs-right">{{ props.item.content }}</td>
           </template>
         </v-data-table>
               </div> 
@@ -174,6 +171,7 @@
       <td class="text-xs-right">{{ props.item.width }}</td>
       <td class="text-xs-right">{{ props.item.height }}</td>
       <td class="text-xs-right">{{ props.item.length }}</td>
+      <td class="text-xs-right">{{ props.item.content }}</td>
       <td class="text-xs-right" :class="['big', isSmall(props.item) ? 'small': '']">{{ props.item.size }}</td>
     </template>
   </v-data-table>
@@ -187,10 +185,12 @@
   
 </template>
 
+
 <script>
 import MainComponent from "./components/MainComponent.vue";
 import PackageController from "@/controllers/PackageController";
 import MainController from "@/controllers/MainController"
+
 export default {
   name: "app",
   components: {
@@ -210,6 +210,7 @@ export default {
         {text:"WIDTH", sortable: false, value: "width"},
         {text: "HEIGHT", sortable: false, value: "height"},
         {text: "LENGTH", sortable: false, value: "length"},
+        {text: "TYPE", sortable: false, value: "content"},
     ],headers2: [
         {text: "ID", sortable: false, value:"id"},
         {text: "X", sortable: false, value: "x"},
@@ -217,6 +218,7 @@ export default {
         {text:"WIDTH", sortable: false, value: "width"},
         {text: "HEIGHT", sortable: false, value: "height"},
         {text: "LENGTH", sortable: false, value: "length"},
+        {text: "TYPE", sortable: false, value: "content"},
         {text: "SIZE", sortable: true, value: "size"},
     ]
   }},
@@ -225,7 +227,7 @@ export default {
       location.reload()
     },
     isSmall: function(obj) {
-      console.log("isSmall ODPALAM")
+      //console.log("isSmall ODPALAM")
       if(obj.size == "SMALL") return true
       return false
     }
@@ -238,7 +240,7 @@ export default {
         this.dialog = false
         if (!val) return
 
-        setTimeout(() => (this.loader = false ), 1200)
+        setTimeout(() => (this.loader = false ), 1000)
       }
     },
   mounted() {

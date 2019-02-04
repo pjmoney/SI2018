@@ -3,6 +3,7 @@ import MapController from "@/controllers/MapController";
 import ForkliftController from "@/controllers/ForkliftController";
 import Forklift from "@/models/ForkliftModel";
 import Cell from "@/components/Cell";
+import PackageController from "./PackageController";
 
 export default {
   name: "MainComponent",
@@ -14,12 +15,12 @@ export default {
       mapStyle: MapController.mapStyle,
       grid: map.gridPub,
       forklift: Forklift,
-      genetic: ''
+      genetic: '',
     };
   },
   methods: {
     move: function() {
-      this.grid = ForkliftController.start();
+        this.grid = ForkliftController.start()
      
     },
     turn: function() {
@@ -27,10 +28,14 @@ export default {
     }
   },
   mounted() {
+  
+  },
+  created() {
+    //MapController.packages = PackageController.packages
     
   },
   beforeCreate() {
     MapController.init();
-
+    //MapController.packages = PackageController.packages
   }
 };

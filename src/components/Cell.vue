@@ -1,7 +1,12 @@
 <template>
   <div :style="style">
     <img v-if="type.isForklift" :style="{ transform: transform }" src="../assets/forklift.png" />
-    <img v-if="type.isPackage" src="../assets/package.png" />
+    <img v-if="type.isPackage && type.package.content=='Chemicals'" src="../assets/package_chemicals.png" />
+    <img v-if="type.isPackage && type.package.content=='Food'" src="../assets/package_food.png" />
+    <img v-if="type.isPackage && type.package.content=='Clothes'" src="../assets/package_clothes.png" />
+    <img v-if="type.isPackage && type.package.content=='Furnitures'" src="../assets/package_furniture.png" />
+    <img v-if="type.isPackage && type.package.content=='Cosmetics'" src="../assets/package_cosmetics.png" />
+    <img v-if="type.isPackage && type.package.content=='Books'" src="../assets/package_books.png" />
   </div>
 </template>
 
