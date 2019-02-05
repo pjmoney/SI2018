@@ -26,7 +26,9 @@ export default {
       ForkliftController.turnLeft;
     },
     click: function() {
-      this.move()
+      setInterval(()=>{
+        this.move()
+      },200)
     },
   },
   mounted() {
@@ -36,14 +38,5 @@ export default {
   beforeCreate() {
     MapController.init();
     //MapController.packages = PackageController.packages
-  }
-};
-
-function sleep(milliseconds) {
-  let start = new Date().getTime()
-  for (let i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break
-    }
   }
 }

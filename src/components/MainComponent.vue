@@ -1,6 +1,6 @@
 <template>
 
-<div id="map" v-bind:style="mapStyle" @click.ctrl="turn" @click.exact="move">
+<div id="map" v-bind:style="mapStyle" @click.ctrl="turn" @click.exact="click">
   <div v-for="g in grid" id="cell">
     <Cell :type="g"/>
   </div>

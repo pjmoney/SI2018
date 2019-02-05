@@ -69,6 +69,7 @@
             >
               <v-icon>refresh</v-icon>
             </v-btn>
+
        <v-layout row wrap align-center justify-center style="margin-top: -200px;">
          <v-flex xs12 sm12 md12 lg12>
          <span class="subheading font-weight-thin grey--text ">Made by Piotr Umreyan, Łukasz Tatrocki, Kacper Tomczak | &copy 2019</span>

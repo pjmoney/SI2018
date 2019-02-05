@@ -163,19 +163,19 @@ export default {
   },
   start() {
     if (MapController.packages.length > 0) {
-      console.log("Start")
-      console.log(Forklift.x + ', ' + Forklift.y)
+      //console.log("Start")
+      //console.log(Forklift.x + ', ' + Forklift.y)
       // while (PackageController.packages.length > 0) {
       let p = MapController.packages[0];
       p.dest = this.checkPackage(p);
-      console.log("Jade po paczke")
-      console.log(Forklift.x + ', ' + Forklift.y)
-      console.log(this.action(AstarController.search(Forklift, p)))
-      console.log(Forklift.x + ', ' + Forklift.y)
-      console.log("Odwoze paczke")
-      console.log(Forklift.x + ', ' + Forklift.y)
-      console.log(this.action(AstarController.search(Forklift, p.dest)))
-      console.log(Forklift.x + ', ' + Forklift.y)
+      // console.log("Jade po paczke")
+      // console.log(Forklift.x + ', ' + Forklift.y)
+      this.action(AstarController.search(Forklift, p))
+      // console.log(Forklift.x + ', ' + Forklift.y)
+      // console.log("Odwoze paczke")
+      // console.log(Forklift.x + ', ' + Forklift.y)
+      this.action(AstarController.search(Forklift, p.dest))
+      //console.log(Forklift.x + ', ' + Forklift.y)
       // }
     }
     return map.gridPub
@@ -183,7 +183,7 @@ export default {
   action: function (actions) {
     actions.forEach(e => {
           if (e == "turn left") this.turnLeft()
-          else if (e == "turn right") this.turnRight()
+          else if (e == "turn right")this.turnRight()
           else this.move()
     })
     return actions

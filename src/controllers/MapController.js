@@ -61,8 +61,15 @@ export default {
   },
   init: function() {
     if(MainController.genetic){
+      let options = {
+        MAX_PACKAGES_PER_MAP: 30,
+        MIN_PACKAGES_PER_MAP: 20,
+        MUTATION_REMOVE_PACKAGE_PERCENTAGE: 5,
+        MUTATION_ADD_PACKAGE_PERCENTAGE:2
+      }
       console.log(MainController.genetic)
-      this.packages = PackageController.run(700,20,40)
+      this.packages = PackageController.run(400,20,options)
+      this.setMap(this.packages)
       console.log(this.packages)
     } else {
      console.log(MainController.genetic)

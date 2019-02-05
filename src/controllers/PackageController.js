@@ -6,21 +6,16 @@ const GAConstructor = require('geneticalgorithm')
 //------------------------------------------------
 
 const contents = ["Food", "Chemicals", "Clothes", "Furnitures", "Cosmetics", "Books", "Electronics"]
-
-const MAX_PACKAGES_PER_MAP = 40
-const MUTATION_REMOVE_PACKAGE_PERCENTAGE = 20
-const MUTATION_ADD_PACKAGE_PERCENTAGE = 50
-const MIN_PACKAGES_PER_MAP = 10
+//! OPTIONS
+const MAX_PACKAGES_PER_MAP = 32
+const MIN_PACKAGES_PER_MAP = 30
+const MUTATION_REMOVE_PACKAGE_PERCENTAGE = 5
+const MUTATION_ADD_PACKAGE_PERCENTAGE = 2
+//!==========================
 
 let phenotype = {
-  grid: map.grid,
-  //!packages: []
+  grid: map.grid
 }
-
-function returnPointsForPhenotypes() {
-
-}
-
 
 function generatePackagesArrayFromGrid(phenotype) {
   let packageArray = []
@@ -213,9 +208,16 @@ export default {
   mutation(phenotype) {
     let child = JSON.parse(JSON.stringify(phenotype))
     let temp = JSON.parse(JSON.stringify(phenotype))
-    let x = Math.floor(Math.random() * 10 + 0)
-    let y1 = Math.floor(Math.random() * map.height + 0)
-    let y2 = Math.floor(Math.random() * map.height + 0)
+    let x1 = 0
+    let x2 = 0
+    let y1 = 0
+    let y2 = 0
+    do{
+      x1 = Math.floor(Math.random() * 10 + 0)
+      x2 = Math.floor(Math.random() * 10 + 0)
+      y1 = Math.floor(Math.random() * map.height + 0)
+      y2 = Math.floor(Math.random() * map.height + 0)
+    } while(!child.grid[x1][y1].isPackage && !child.grid[x2][y2].isPackage)
 
     //Check amount of all packages on the map - if there is more packages than MAX, remove 1/2nd
     if(generatePackagesArrayFromGrid(child).length > MAX_PACKAGES_PER_MAP){
@@ -230,32 +232,40 @@ export default {
         }
       }
     }
-    child.grid[x][y1] = child.grid[x][y2]
-    child.grid[x][y2] = temp.grid[x][y1]
-    let randomPercentage = Math.random()
-    //console.log('LOSUJE - ' + randomPercentage)
-    if (randomPercentage <= MUTATION_REMOVE_PACKAGE_PERCENTAGE / 100) {
+
+    if (child.grid[x1][y1].isPackage && child.grid[x2][y2].isPackage){
+      child.grid[x1][y1].package = child.grid[x2][y2].package
+
+      child.grid[x1][y1].package.x = x1
+      child.grid[x1][y1].package.y = y1
+
+      child.grid[x2][y2].package = temp.grid[x1][y1].package
+
+      child.grid[x2][y2].package.x = x2
+      child.grid[x2][y2].package.y = y2
+      //console.log('Zaminiłem paczki')
+    }
+    
+    let randomPercentageRemove = Math.random()
+    let randomPercentageAdd = Math.random()
+    if (randomPercentageRemove <= MUTATION_REMOVE_PACKAGE_PERCENTAGE / 100) {
+      //console.log('USUWAM PACZKE')
       let w, h = 0
-      //console.log('USUWAM - WYLOSOWANO ' + randomPercentage)
       do {
         w = Math.floor(Math.random() * 10 + 0)
         h = Math.floor(Math.random() * map.height + 0)
       } while (!child.grid[w][h].isPackage)
       child.grid[w][h] = clear(w,h)
-      console.log('USUWAM PACZKE - ' + randomPercentage)
-      return child
     }
-    if (randomPercentage <= MUTATION_ADD_PACKAGE_PERCENTAGE / 100){
+    if (randomPercentageAdd <= MUTATION_ADD_PACKAGE_PERCENTAGE / 100){
+      //console.log('DODAJE PACZKE')
       let w, h = 0
-      //console.log('USUWAM - WYLOSOWANO ' + randomPercentage)
       do {
         w = Math.floor(Math.random() * 10 + 0)
         h = Math.floor(Math.random() * map.height + 0)
       } while (child.grid[w][h].isPackage)
       child.grid[w][h].isPackage = true
       child.grid[w][h].package = randomPackage(w, h)
-      console.log('DODAJE PACZKE - ' + randomPercentage)
-      return child
     }
     return child
   },
@@ -283,8 +293,10 @@ export default {
   */
   fitness(phenotype) {
     let fitness = 0
-    if(generatePackagesArrayFromGrid(phenotype).length > MAX_PACKAGES_PER_MAP)
-      fitness -= 100
+    if(generatePackagesArrayFromGrid(phenotype).length > MAX_PACKAGES_PER_MAP || generatePackagesArrayFromGrid(phenotype).length < MIN_PACKAGES_PER_MAP){
+      //console.log('PACZEK WIECEJ NIZ MAX -'+generatePackagesArrayFromGrid(phenotype).length * 10+' punktow')
+      fitness -= generatePackagesArrayFromGrid(phenotype).length * 10
+    }
     for (let tempx = 0; tempx < 12; tempx++) {
       for (let tempy = 0; tempy < 16; tempy++) {
         if (phenotype.grid[tempx][tempy].isPackage) {
@@ -297,11 +309,11 @@ export default {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 2)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 1)) {
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 1)>0) {
               fitness += 20
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)) {
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)>0) {
               fitness += 15
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)>0){
               fitness += 15
             }
           }
@@ -314,11 +326,11 @@ export default {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 2) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 2)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)>0){
               fitness += 20
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)>0){
               fitness +=10
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)>0){
               fitness +=15
             }
           }
@@ -329,11 +341,11 @@ export default {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)>0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)>0){
               fitness += 20
-            } else if(checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)){
+            } else if(checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)>0){
               fitness += 15
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)>0){
               fitness +=15
             }
           }
@@ -351,11 +363,11 @@ export default {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)>0){
               fitness += 20
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)>0){
               fitness += 15
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1)>0){
               fitness += 10
             }
           }
@@ -364,13 +376,13 @@ export default {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 1)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 2) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 2)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1)) {
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1)>0) {
               fitness += 20
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)>0){
               fitness += 15
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)>0){
               fitness += 15
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)){
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)>0){
               fitness += 10
             }
           }
@@ -400,7 +412,7 @@ export default {
       x = Math.floor(Math.random() * 10 + 0);
       y = Math.floor(Math.random() * map.height + 0)
       side = Math.floor(Math.random() * 4 + 1)
-      if ((x + side) <= 10 && (x - side) >= 0 && (y + side) <= 15 && (y - side) >= 0) { // Check if x >= 0 and x <= 10, Check if y >= 0 and y <= 15
+      if ((x + side) <= 11 && (x - side) >= 0 && (y + side) <= 15 && (y - side) >= 0) { // Check if x >= 0 and x <= 10, Check if y >= 0 and y <= 15
           isFit = true
       }
     }
@@ -461,7 +473,6 @@ export default {
       return console.error('Packages limit per map: ' + MAX_PACKAGES_PER_MAP + '\nYour number of packages: ' + MPI)
     } else {
       this.randomGeneticStartPopulation(population, MPI)
-      let lastBestScore = 0
       let counter = 0
       //Standard lib config
       let config = {
@@ -492,14 +503,20 @@ export default {
     }
   },
   //Start main Genetic Algorithm
-  run(bestScore = 100, population = 20, MPI = MAX_PACKAGES_PER_MAP) {
-    const finalMap = this.startGenetic(bestScore, population, MPI)
+  run(bestScore = 100, population = 20, options) {
+    if(options != undefined){
+      console.log('wczytuje opcje uztykownika')
+    this.MAX_PACKAGES_PER_MAP = options.MAX_PACKAGES_PER_MAP
+    this.MIN_PACKAGES_PER_MAP = options.MIN_PACKAGES_PER_MAP
+    this.MUTATION_REMOVE_PACKAGE_PERCENTAGE = options.MUTATION_REMOVE_PACKAGE_PERCENTAGE
+    this.MUTATION_ADD_PACKAGE_PERCENTAGE = options.MUTATION_ADD_PACKAGE_PERCENTAGE
+  } else { console.log('wczytuje opcje standardowe') }
+    const finalMap = this.startGenetic(bestScore, population, MAX_PACKAGES_PER_MAP)
     this.packages = generatePackagesArrayFromGrid(finalMap)
 
-          
-    map.grid = finalMap.grid
     MapController.setMap(ForkliftController.forklift);
-    console.log(this.packages)
+    map.grid = finalMap.grid
+    
 
     return this.packages
   }

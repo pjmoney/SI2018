@@ -9,10 +9,10 @@ export default {
   runNetwork: function (length, height, width) {
     let result = net.run([length, height, width]);
     if (result >= 0.5){
-      console.log(result);
+      //console.log(result);
       return "big";
     }
-    console.log(result);
+    //console.log(result);
     return "small";
   }
 }
