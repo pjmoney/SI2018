@@ -22,6 +22,7 @@ export default {
           y: y
         }
         grid[x][y] = gridPat
+        
       }
     }
     return grid

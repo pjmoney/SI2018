@@ -7,6 +7,7 @@
     <img v-if="type.isPackage && type.package.content=='Furnitures'" src="../assets/package_furniture.png" />
     <img v-if="type.isPackage && type.package.content=='Cosmetics'" src="../assets/package_cosmetics.png" />
     <img v-if="type.isPackage && type.package.content=='Books'" src="../assets/package_books.png" />
+    <img v-if="type.isPackage && type.package.content=='Electronics'" src="../assets/package_electronics.png" />
   </div>
 </template>
 

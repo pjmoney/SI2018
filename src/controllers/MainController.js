@@ -4,7 +4,6 @@ import ForkliftController from "@/controllers/ForkliftController";
 import Forklift from "@/models/ForkliftModel";
 import Cell from "@/components/Cell";
 import PackageController from "./PackageController";
-
 export default {
   name: "MainComponent",
   components: {
@@ -19,23 +18,32 @@ export default {
     };
   },
   methods: {
+    
     move: function() {
         this.grid = ForkliftController.start()
-     
     },
     turn: function() {
-      ForkliftController.turn(-1);
-    }
+      ForkliftController.turnLeft;
+    },
+    click: function() {
+      this.move()
+    },
   },
   mounted() {
-  
-  },
-  created() {
-    //MapController.packages = PackageController.packages
     
   },
+
   beforeCreate() {
     MapController.init();
     //MapController.packages = PackageController.packages
   }
 };
+
+function sleep(milliseconds) {
+  let start = new Date().getTime()
+  for (let i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break
+    }
+  }
+}

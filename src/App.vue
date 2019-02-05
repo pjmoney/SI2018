@@ -81,7 +81,7 @@
           <v-flex xs4 sm4 md4 lg4>
           </v-flex>
           </v-layout>
-      <v-layout row wrap>
+      <v-layout row wrap v-show="!this.genetic">
         <v-flex xs6 sm6 md6 >
           <div class="info" >
             <h2 class="display-3 font-weight-light">Packages</h2>
@@ -190,6 +190,7 @@
 import MainComponent from "./components/MainComponent.vue";
 import PackageController from "@/controllers/PackageController";
 import MainController from "@/controllers/MainController"
+import MapController from "@/controllers/MapController"
 
 export default {
   name: "app",
@@ -243,10 +244,11 @@ export default {
         setTimeout(() => (this.loader = false ), 1000)
       }
     },
-  mounted() {
-  this.packages = PackageController.packages;
-  this.delivered = PackageController.delivered;
-  }
+   created() {
+    //MapController.packages = PackageController.packages
+    this.packages = PackageController.packages;
+    this.delivered = PackageController.delivered;
+  },
 };
 </script>
 

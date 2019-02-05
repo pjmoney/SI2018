@@ -23,7 +23,8 @@ export default {
     height: map.height * map.cellHeight + "px"
   },
   ai : '',
-  packages: [],
+  packages : [],
+  delivered : [],
   grid: function() {
     let grid = [];
     for (let x = 0; x < map.height; x++) {
@@ -61,8 +62,8 @@ export default {
   init: function() {
     if(MainController.genetic){
       console.log(MainController.genetic)
-      this.packages = PackageController.startGenetic(200,20,10)
-      this.setMap(this.packages)
+      this.packages = PackageController.run(700,20,40)
+      console.log(this.packages)
     } else {
      console.log(MainController.genetic)
       this.setMap(PackageController.random());
@@ -99,7 +100,7 @@ export default {
   setMap: function(grid) {
     grid.forEach(e => {
       if (e.type == "forklift") map.grid[e.x][e.y].isForklift = true;
-      if (e.type == "package") map.grid[e.x][e.y].isPackage = true;
+      if (e.type == "floor") map.grid[e.x][e.y].isPackage = true
     });
     this.grid();
   }

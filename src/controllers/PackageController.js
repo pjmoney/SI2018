@@ -5,10 +5,11 @@ import ForkliftController from "@/controllers/ForkliftController"
 const GAConstructor = require('geneticalgorithm')
 //------------------------------------------------
 
-const contents = ["Food", "Chemicals", "Clothes", "Furnitures", "Cosmetics", "Books"]
+const contents = ["Food", "Chemicals", "Clothes", "Furnitures", "Cosmetics", "Books", "Electronics"]
 
-const MAX_PACKAGES_PER_MAP = 80
+const MAX_PACKAGES_PER_MAP = 40
 const MUTATION_REMOVE_PACKAGE_PERCENTAGE = 20
+const MUTATION_ADD_PACKAGE_PERCENTAGE = 50
 const MIN_PACKAGES_PER_MAP = 10
 
 let phenotype = {
@@ -23,12 +24,12 @@ function returnPointsForPhenotypes() {
 
 function generatePackagesArrayFromGrid(phenotype) {
   let packageArray = []
-  for (let x = 0; x < 11; x++) {
+  for (let x = 0; x < 12; x++) {
     for (let y = 0; y < 16; y++) {
       //console.log('zamieniam grida na paczki')
       //console.log(phenotype.grid[x][y])
-      if (phenotype.grid[x][y].isPackage) {
-        phenotype.grid[x][y].package.id = makeid(4)
+      if (phenotype.grid[x][y].isPackage && phenotype.grid[x][y].package != null && phenotype.grid[x][y].type == 'floor') {
+        phenotype.grid[x][y].package.id = makeid()
         packageArray.push(phenotype.grid[x][y].package)
       }
     }
@@ -68,7 +69,7 @@ function randomPackage(posx, posy) {
 
   let pkg = {
     //DO NOT GENERATE ID YET
-    id: makeid(4),
+    id: makeid(),
     length: Math.floor(Math.random() * 20 + 1),
     height: Math.floor(Math.random() * 20 + 1),
     width: Math.floor(Math.random() * 20 + 1),
@@ -113,20 +114,43 @@ function deletePackageFromArray(x, y, myArray) {
   }
 }
 
-function makeid(length) {
-  let text = "";
-  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let date = new Date()
-  date = date.getMilliseconds()
-  for (var i = 0; i < length; i++) {
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
-    if (i % 3 == 0) text += "/"
+function clear(x, y){
+  let field = ''
+  if (x > 12 && y < 8) field = 'smallstore'
+  else if (x > 12 && y > 8) field = 'bigstore'
+  else if(x < 12) field = 'floor'
+  return {
+    type: field,
+    package: null,
+    x: x,
+    y: y,
+    cost: 1,
+    isForklift: false,
+    isPackage: false
   }
-
-  text += date
-
-  return text;
 }
+function makeid() {
+  // Math.random should be unique because of its seeding algorithm.
+  // Convert it to base 36 (numbers + letters), and grab the first 9 characters
+  // after the decimal.
+  return '_' + Math.random().toString(36).substr(2, 9);
+};
+
+//
+// function makeid(length) {
+//   let text = "";
+//   let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+//   let date = new Date()
+//   date = date.getMilliseconds()
+//   for (var i = 0; i < length; i++) {
+//     text += possible.charAt(Math.floor(Math.random() * possible.length));
+//     if (i % 3 == 0) text += "/"
+//   }
+
+//   text += date
+
+//   return text;
+// }
 
 export default {
   packages: [],
@@ -141,7 +165,7 @@ export default {
       let x = Math.floor(Math.random() * map.width + 0);
       let y = Math.floor(Math.random() * map.height + 0);
       let Package = {
-        //id: makeid(4),
+        id: makeid(),
         length: Math.floor(Math.random() * 10 + 1),
         height: Math.floor(Math.random() * 10 + 1),
         width: Math.floor(Math.random() * 10 + 1),
@@ -192,6 +216,20 @@ export default {
     let x = Math.floor(Math.random() * 10 + 0)
     let y1 = Math.floor(Math.random() * map.height + 0)
     let y2 = Math.floor(Math.random() * map.height + 0)
+
+    //Check amount of all packages on the map - if there is more packages than MAX, remove 1/2nd
+    if(generatePackagesArrayFromGrid(child).length > MAX_PACKAGES_PER_MAP){
+      let packagesToRemove = Math.floor(MAX_PACKAGES_PER_MAP/2)
+      for(let w = 0; w < 11; w++){
+        for(let h = 0; h < 16; h++){
+          //Check if field isPackage and also if packagesToRemove is greater than 0 - if yes, remove
+          if(child.grid[w][h].isPackage && packagesToRemove > 0){
+            child.grid[w][h] = clear(w,h)
+            packagesToRemove--
+          }
+        }
+      }
+    }
     child.grid[x][y1] = child.grid[x][y2]
     child.grid[x][y2] = temp.grid[x][y1]
     let randomPercentage = Math.random()
@@ -203,8 +241,20 @@ export default {
         w = Math.floor(Math.random() * 10 + 0)
         h = Math.floor(Math.random() * map.height + 0)
       } while (!child.grid[w][h].isPackage)
-      child.grid[w][h].isPackage = false
-      child.grid[w][h].package = null
+      child.grid[w][h] = clear(w,h)
+      console.log('USUWAM PACZKE - ' + randomPercentage)
+      return child
+    }
+    if (randomPercentage <= MUTATION_ADD_PACKAGE_PERCENTAGE / 100){
+      let w, h = 0
+      //console.log('USUWAM - WYLOSOWANO ' + randomPercentage)
+      do {
+        w = Math.floor(Math.random() * 10 + 0)
+        h = Math.floor(Math.random() * map.height + 0)
+      } while (child.grid[w][h].isPackage)
+      child.grid[w][h].isPackage = true
+      child.grid[w][h].package = randomPackage(w, h)
+      console.log('DODAJE PACZKE - ' + randomPercentage)
       return child
     }
     return child
@@ -212,30 +262,29 @@ export default {
   //
   /*
     ?Fitness function - it defines which phenotypes are be able to survive (survival of the fittest).
-    =========================================================================================================
+    =================================================================================================================================
     ||Several known conditions:
-    =========================================================================================================
-    ||Content        |     Can be neighbour                            |  Cannot be neighbour(min. distance)
-    =========================================================================================================
-    ||FOOD           |     Furnitures, FOOD                            |  Clothes(1), Chemicals(2), Books(1), Cosmetics(2)
-    ---------------------------------------------------------------------------------------------------------
-    ||CHEMICALS      |     Furnitures, CHEMICALS                       |  Books(2), Cosmetics(1), Clothes(1), Food(2)
-    ---------------------------------------------------------------------------------------------------------
-    ||CLOTHES        |     Books, Furnitures, CLOTHES                  |  Cosmetics(1), Food(1), Chemicals(1)
-    ---------------------------------------------------------------------------------------------------------
-    ||FURNITURES     |Books,FURNITURES,CLOTHES,Cosmetics,Food,Chemicals|  
-    ---------------------------------------------------------------------------------------------------------
-    ||COSMETICS      |     Books, Furnitures, COSMETICS                | Food(2), Chemicals(1), Clothes(1)
-    ---------------------------------------------------------------------------------------------------------
-    ||BOOKS          |     BOOKS, Furnitures, Clothes, Cosmetics       | Food(1), Chemicals(2)
+    =================================================================================================================================
+    ||Content        |     Can be neighbour                                              |  Cannot be neighbour(min. distance)
+    =================================================================================================================================
+    ||FOOD           |     Furnitures, FOOD, ELECTRONICS                                 |  Clothes(1), Chemicals(2), Books(1), Cosmetics(2)
+    ---------------------------------------------------------------------------------------------------------------------------------
+    ||CHEMICALS      |     Furnitures, CHEMICALS, ELECTRONICS                            |  Books(2), Cosmetics(1), Clothes(1), Food(2)
+    ---------------------------------------------------------------------------------------------------------------------------------
+    ||CLOTHES        |     Books, Furnitures, CLOTHES, ELECTRONICS                       |  Cosmetics(1), Food(1), Chemicals(1)
+    ---------------------------------------------------------------------------------------------------------------------------------
+    ||FURNITURES     |Books,FURNITURES,CLOTHES,Cosmetics,Food,Chemicals                  |  ELECTRONICS(1)
+    ---------------------------------------------------------------------------------------------------------------------------------
+    ||COSMETICS      |     Books, Furnitures, COSMETICS, ELECTRONICS                     | Food(2), Chemicals(1), Clothes(1)
+    ---------------------------------------------------------------------------------------------------------------------------------
+    ||BOOKS          |     BOOKS, Furnitures, Clothes, Cosmetics, ELECTRONICS             | Food(1), Chemicals(2)
+    ---------------------------------------------------------------------------------------------------------------------------------
+    ||ELECTRONICS    |     Books, Clothes, Cosmetics, ELECTRONICS, Food, Chemicals       | Furnitures(1)
   */
   fitness(phenotype) {
-    //console.log('sprawdzam fenotyp')
     let fitness = 0
-    //!console.log(phenotype.packages)
-    //console.log(phenotype.grid)
-    // let packages = JSON.parse(JSON.stringify(phenotype.packages))
-    // let grid = JSON.parse(JSON.stringify(phenotype.grid))
+    if(generatePackagesArrayFromGrid(phenotype).length > MAX_PACKAGES_PER_MAP)
+      fitness -= 100
     for (let tempx = 0; tempx < 12; tempx++) {
       for (let tempy = 0; tempy < 16; tempy++) {
         if (phenotype.grid[tempx][tempy].isPackage) {
@@ -248,37 +297,52 @@ export default {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 2)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1)
-            } else {
-
-              fitness += 10
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 1)) {
+              fitness += 20
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)) {
+              fitness += 15
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)){
+              fitness += 15
             }
           }
           if (phenotype.grid[tempx][tempy].package.content == 'Chemicals') {
             if (checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 2) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 2)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)) {
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)>0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)) {
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)>0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 2) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 2)
-            } else {
-              fitness += 10
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)){
+              fitness += 20
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)){
+              fitness +=10
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)){
+              fitness +=15
             }
           }
           if (phenotype.grid[tempx][tempy].package.content == 'Clothes') {
             if (checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 1) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 1)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)) {
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)>0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)
-            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)) {
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)>0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)
-            } else {
-              fitness += 10
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)){
+              fitness += 20
+            } else if(checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)){
+              fitness += 15
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)){
+              fitness +=15
             }
           }
           if (phenotype.grid[tempx][tempy].package.content == 'Furnitures') {
-            fitness += 10
+            if (checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)> 0){
+              fitness -=checkNeighbours(tempx, tempy, phenotype.grid, 'Electronics', 1)
+            } else {
+            fitness += 15
+          }
           }
           if (phenotype.grid[tempx][tempy].package.content == 'Cosmetics') {
             if (checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 2) > 0) {
@@ -287,6 +351,12 @@ export default {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 1)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)){
+              fitness += 20
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)){
+              fitness += 15
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1)){
+              fitness += 10
             }
           }
           if (phenotype.grid[tempx][tempy].package.content == 'Books') {
@@ -294,8 +364,21 @@ export default {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Food', 1)
             } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 2) > 0) {
               fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Chemicals', 2)
-            } else {
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Books', 1)) {
+              fitness += 20
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)){
+              fitness += 15
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Clothes', 1)){
+              fitness += 15
+            } else if (checkNeighbours(tempx, tempy, phenotype.grid, 'Cosmetics', 1)){
               fitness += 10
+            }
+          }
+          if (phenotype.grid[tempx][tempy].package.content == 'Electronics') {
+            if (checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1) > 0) {
+              fitness -= checkNeighbours(tempx, tempy, phenotype.grid, 'Furnitures', 1)
+            } else {
+              fitness +=20
             }
           }
         }
@@ -317,10 +400,8 @@ export default {
       x = Math.floor(Math.random() * 10 + 0);
       y = Math.floor(Math.random() * map.height + 0)
       side = Math.floor(Math.random() * 4 + 1)
-      if ((x + side) <= 10 && (x - side) >= 0) { // Check if x >= 0 and x <= 10
-        if ((y + side) <= 15 && (y - side) >= 0) { // Check if y >= 0 and y <= 15
+      if ((x + side) <= 10 && (x - side) >= 0 && (y + side) <= 15 && (y - side) >= 0) { // Check if x >= 0 and x <= 10, Check if y >= 0 and y <= 15
           isFit = true
-        }
       }
     }
     // Making Child1
@@ -330,14 +411,17 @@ export default {
           if (child1.grid[w][h].isPackage && child2.grid[w][h].isPackage) {
             //!deletePackageFromArray(w, h, child1.packages)
             child1.grid[w][h].package = child2.grid[w][h].package
+            child1.grid[w][h].package.x = w
+            child1.grid[w][h].package.y = h
             //!child1.packages.push(child1.grid[w][h].package)
           } else if (!child1.grid[w][h].isPackage && child2.grid[w][h].isPackage) {
             child1.grid[w][h].package = child2.grid[w][h].package
+            child1.grid[w][h].package.x = w
+            child1.grid[w][h].package.y = h
             //!child1.packages.push(child1.grid[w][h].package)
           } else if (child1.grid[w][h].isPackage && !child2.grid[w][h].isPackage) {
             //!deletePackageFromArray(w, h, child1.packages)
-            child1.grid[w][h].isPackage = false
-            child1.grid[w][h].package = ''
+            child1.grid[w][h] = clear(w,h)
 
           }
         }
@@ -352,14 +436,17 @@ export default {
         if (child2.grid[w][h].isPackage && child1.grid[w][h].isPackage) {
           //!deletePackageFromArray(w, h, child2.packages)
           child2.grid[w][h].package = child1.grid[w][h].package
+          child2.grid[w][h].package.x = w
+          child2.grid[w][h].package.y = h
           //!child2.packages.push(child2.grid[w][h].package)
         } else if (!child2.grid[w][h].isPackage && child1.grid[w][h].isPackage) {
           child2.grid[w][h].package = child1.grid[w][h].package
+          child2.grid[w][h].package.x = w
+          child2.grid[w][h].package.y = h
           //!child2.packages.push(child2.grid[w][h].package)
         } else if (child2.grid[w][h].isPackage && !child1.grid[w][h].isPackage) {
           //!deletePackageFromArray(w, h, child2.packages)
-          child2.grid[w][h].package = null
-          child2.grid[w][h].isPackage = false
+          child2.grid[w][h] = clear(w,h)
         }
 
         child2.grid[w][h] = child1.grid[w][h]
@@ -368,8 +455,8 @@ export default {
     return [child1, child2]
   },
 
-  //Start main Genetic Algorithm
-  startGenetic(bestScore = 100, population = 20, MPI = MAX_PACKAGES_PER_MAP) {
+
+  startGenetic(bestScore, population, MPI) {
     if (MPI > MAX_PACKAGES_PER_MAP) {
       return console.error('Packages limit per map: ' + MAX_PACKAGES_PER_MAP + '\nYour number of packages: ' + MPI)
     } else {
@@ -399,13 +486,21 @@ export default {
       console.log('Cala populacja:')
       console.log(geneticAI.scoredPopulation())  
       console.log('KONIEC ALGORYTMU - minęło ' + (Date.now() - time1)/1000 + ' sekund')
-      MapController.setMap(ForkliftController.forklift);
-      map.grid = geneticAI.best().grid
-      this.packages = generatePackagesArrayFromGrid(map)
-
-      console.log(this.packages)
+      
       //this.packages = generatePackagesArrayFromGrid(map)
-      return this.packages
+      return geneticAI.best()
     }
+  },
+  //Start main Genetic Algorithm
+  run(bestScore = 100, population = 20, MPI = MAX_PACKAGES_PER_MAP) {
+    const finalMap = this.startGenetic(bestScore, population, MPI)
+    this.packages = generatePackagesArrayFromGrid(finalMap)
+
+          
+    map.grid = finalMap.grid
+    MapController.setMap(ForkliftController.forklift);
+    console.log(this.packages)
+
+    return this.packages
   }
 }
