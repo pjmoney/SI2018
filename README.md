@@ -1,29 +1,13 @@
-# forklift-ai
+# AI Forklift
+Projekt zaliczeniowy na przedmiot Sztuczna Inteligencja. Wózek znajduje drogę wykorzystując algorytm A*, rozpoznaje paczki dzięki sieciom neuronowym. Mapa natomiast jest generowana poprzez algorytm genetyczny według ściśle ustalonych zasad.
 
-## Project setup
+## Instalacja pakietów
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+### Kompilacja
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
